@@ -130,7 +130,7 @@ app.get('/cards', async (req, res) => {
 
 //api for homepage"
 app.get('/homepage/:id', async (req, res) => {
-    const { id } = req.params;
+    const id = parseInt(req.params.id); // convert to Int
     try {
         const profile = await prisma.user.findUnique({
             where: { id },
