@@ -18,14 +18,14 @@ model User {
   email String  @unique
   name  String
   cards BusinessCard[]
-  birthday DateTime
+  birthday DateTime?
 }
 
 model BusinessCard {
   id           Int          @id @default(autoincrement())
   jobTitle     String
   companyName  String
-  phoneNumber  Int          
+  phoneNumber  String          
   websites     Website[]
   socials      Social[]
   customBio    String

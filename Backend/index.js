@@ -26,32 +26,37 @@ app.get("/", (req, res) => {
 });
 
 // Signup as a new user
-app.post("/user-signup", async (req, res) => {
+app.post('/user-signup', async (req, res) => {
     const { name, email, birthday } = req.body;
+    console.log('Received signup request:', { name, email, birthday }); // ✅
+
     try {
         const existingUser = await prisma.user.findUnique({
-            where: {
-                email: {
-                    equals: email,
-                    mode: 'insensitive',
-                },
-            }
+            where: { email }
         });
         if (existingUser) {
-            return res.status(400).json({ error: "Email already in use" });
+            console.log('Duplicate email:', email); // ✅
+            return res.status(400).json({ error: 'Email already in use' });
         }
+
         const newUser = await prisma.user.create({
             data: {
                 name,
                 email,
-                birthday: birthday ? new Date(birthday) : null,
+                birthday: birthday ? new Date(birthday) : null
             },
         });
+
+        console.log('User created:', newUser); // ✅
         res.status(200).json(newUser);
     } catch (e) {
+        console.error('Signup error:', e); // ✅
         res.status(500).json({ error: e.message });
     }
 });
+
+
+module.exports = app;
 
 // Get all users with their cards
 app.get('/users', async (req, res) => {
