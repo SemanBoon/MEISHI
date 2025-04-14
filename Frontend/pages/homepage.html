@@ -42,9 +42,6 @@
       document.addEventListener('DOMContentLoaded', () => {
         const statusMessage = document.getElementById('status-message');
 
-        // Use the user ID (assuming it's '1' for now)
-        const userId = 1; 
-
         // Update fetch URL to use the correct endpoint with ID
         fetch(`http://localhost:3000/homepage`)
           .then(response => {

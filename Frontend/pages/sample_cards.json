@@ -1,0 +1,28 @@
+[
+    {
+      "jobTitle": "Software Engineer",
+      "companyName": "TechSphere Inc",
+      "phoneNumber": "1234567890",
+      "websites": [
+        { "url": "https://alice.dev/", "label": "Portfolio" }
+      ],
+      "socials": [
+        { "url": "https://linkedin.com/in/alicechen", "platform": "LinkedIn" }
+      ],
+      "customBio": "Passionate about clean code and cats.",
+      "userId": 1
+    },
+    {
+      "jobTitle": "Product Manager",
+      "companyName": "BrightSpark",
+      "phoneNumber": "9876543210",
+      "websites": [
+        { "url": "https://bobprojects.com/", "label": "Projects" }
+      ],
+      "socials": [
+        { "url": "https://linkedin.com/in/bobnguyen", "platform": "LinkedIn" }
+      ],
+      "customBio": "Building products with impact.",
+      "userId": 2
+    }
+]
