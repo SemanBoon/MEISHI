@@ -25,33 +25,53 @@ app.get("/", (req, res) => {
     res.send("Initial Selection Page");
 });
 
-// Signup as a new user
+
 app.post('/user-signup', async (req, res) => {
-    const { name, email, birthday } = req.body;
-    console.log('Received signup request:', { name, email, birthday }); // ✅
+    const { name, email, password } = req.body;
 
     try {
-        const existingUser = await prisma.user.findUnique({
-            where: { email }
-        });
+        const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
-            console.log('Duplicate email:', email); // ✅
             return res.status(400).json({ error: 'Email already in use' });
         }
+
+        const hashedPassword = await bcrypt.hash(password, 10); // 🔐 hash it
 
         const newUser = await prisma.user.create({
             data: {
                 name,
                 email,
-                birthday: birthday ? new Date(birthday) : null
-            },
+                password: hashedPassword, // ✅ this is what was missing
+                birthday: null
+            }
         });
 
-        console.log('User created:', newUser); // ✅
         res.status(200).json(newUser);
     } catch (e) {
-        console.error('Signup error:', e); // ✅
-        res.status(500).json({ error: e.message });
+        console.error('Signup error:', e);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        res.status(200).json({ message: 'Login successful', user });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
