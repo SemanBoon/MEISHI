@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>QR</title>
+  <link rel="stylesheet" href="../styles/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <h1>QR</h1>
+  <h4 id='date'></h4>
+
+  <div class="image-section">
+    <div id="qrcode" style="text-align: center; margin-top: 20px;"></div>
+  </div>
+
+  <div class="toolbar">
+    <a href="profile.html">
+        <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
+    </a>
+    <a href="homepage.html">
+        <img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon">
+    </a>
+    <a href="settings.html">
+        <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
+    </a>
+  </div>
+
+  <!-- 🔽 Load your custom logic to fetch QR from the backend -->
+  <script src="qr.js"></script>
+</body>
+</html>

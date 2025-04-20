@@ -1,0 +1,103 @@
+body {
+  background-color: #2c2928;
+  font-family: 'Segoe UI', sans-serif;
+  color: #f3f3f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.top-image {
+    display: flex;  /* Enable flexbox for the container */
+    justify-content: center;  /* Center the image horizontally */
+
+    margin-top: 100px;  /* Optional: Adds a little space from the top */
+    margin-bottom: 30px;
+}
+
+.top-image img {
+    max-width: 225px;  /* Limits the width */
+    height: auto;  /* Keeps aspect ratio */
+    display: block;  /* Prevents image from being inline */
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2x2 grid */
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Make sure <a> elements wrap around images properly */
+.image-grid a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Image styling */
+.image-grid img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain; 
+}
+
+/* Remove extra link spacing */
+.image-grid a {
+    text-decoration: none;
+    display: block;
+}
+
+
+
+.auth-container {
+  background-color: #3c3c3c;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 300px;
+}
+
+.auth-container h1 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f3f3f3;
+  color: #000;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #1c81e6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1c81e6;
+}
+
+p {
+  text-align: center;
+  margin-top: 15px;
+}
