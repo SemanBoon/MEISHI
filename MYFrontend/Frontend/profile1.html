@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profile</title>
+  <link rel="stylesheet" href="../styles/profile.css" />
+</head>
+<body>
+  <h1>Profile</h1>
+  <h4 id="date"></h4>
+
+  <div class="profile-wrapper">
+    <!-- Top Section -->
+    <div class="profile-header">
+      <div class="profile-photo">
+        <img src="../images/Profile Icon.png" alt="Profile Photo" />
+      </div>
+      <div class="profile-info">
+        <h2 id="user-name">Jane Doe</h2>
+        <p id="username">@janedoe</p>
+        <p id="user-desc">Aspiring software engineer passionate about innovation and design.</p>
+      </div>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="profile-card">
+      <p id="user-school">Texas State University</p>
+      <p id="user-major">Computer Engineering</p>
+      <p id="user-grad">Graduation: May 2026</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="profile-actions">
+      <button onclick="window.location.href='qr.html'">QR Code</button>
+      <div id="qrcode-container" style="text-align: center; margin-top: 20px;">
+        <div id="qrcode"></div>
+      </div>
+
+      <button onclick="window.location.href='editcard.html'">Edit Card</button>
+      <button onclick="window.location.href='activity.html'">Metrics</button>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <a href="homepage.html">
+      <img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon" />
+    </a>
+    <a href="settings.html">
+      <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon" />
+    </a>
+  </div>
+
+  <!-- Scripts at bottom for best loading practice -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

@@ -1,3 +1,0 @@
-# MEISHI
-## HELLO##
-## MORE CHANGES ##

@@ -1,0 +1,17 @@
+[
+    {
+      "name": "Alice Chen",
+      "email": "alice@example.com",
+      "birthday": "1998-07-15"
+    },
+    {
+      "name": "Bob Nguyen",
+      "email": "bob@example.com",
+      "birthday": "1995-12-01"
+    },
+    {
+      "name": "Carla Singh",
+      "email": "carla@example.com",
+      "birthday": "2000-04-22"
+    }
+]
