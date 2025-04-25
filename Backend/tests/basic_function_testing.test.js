@@ -145,3 +145,30 @@ describe('User Login Endpoint', () => {
     expect(res.body).toHaveProperty('error', 'User not found');
   });
 });
+
+describe('Scrollodex Route', () => {
+  test('should return user’s business cards in Scrollodex', async () => {
+    const res = await request(app).get(`/scrollodex/${userId}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('scrollodex');
+    expect(Array.isArray(res.body.scrollodex)).toBe(true);
+    expect(res.body.scrollodex.length).toBeGreaterThan(0);
+  });
+
+  test('should return empty scrollodex array if user has no cards', async () => {
+    const newUserRes = await request(app).post('/user-signup').send({
+      name: 'NoCard User',
+      email: `nocard${Date.now()}@example.com`,
+      password: 'test123'
+    });
+  
+    const newUserId = newUserRes.body.id;
+  
+    const res = await request(app).get(`/scrollodex/${newUserId}`);
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.scrollodex)).toBe(true);
+    expect(res.body.scrollodex.length).toBe(0); // should be empty
+  });
+  
+
+});

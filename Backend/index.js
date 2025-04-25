@@ -250,6 +250,45 @@ app.get('/cards/:id/qr', async (req, res) => {
     }
 });
 
+//gets scrollodex of a user
+//frontend is getting array of business cards (empty array if user has none)
+app.get('/scrollodex/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId);
+
+    try {
+        const userWithCards = await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                cards: {
+                    include: {
+                        websites: true,
+                        socials: true
+                    }
+                }
+            }
+        });
+
+        if (!userWithCards) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({
+            user: {
+                id: userWithCards.id,
+                name: userWithCards.name,
+                email: userWithCards.email
+            },
+            scrollodex: userWithCards.cards
+        });
+
+    } catch (error) {
+        console.error('Scrollodex fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch scrollodex' });
+    }
+});
+
+
+
 // Add a shared card to another user's rolodex
 app.post('/cards/share', async (req, res) => {
     try {
