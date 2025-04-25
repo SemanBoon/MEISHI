@@ -326,7 +326,14 @@ app.post('/cards/share', async (req, res) => {
                         platform: s.platform
                     }))
                 }
-                // Assign to recipient
+            }
+        });
+
+        await prisma.share.create({
+            data: {
+              cardId: cardId,
+              fromUserId: card.userId,
+              toUserId: recipientUserId
             }
         });
 
@@ -371,3 +378,20 @@ app.get('/cards/:id/share', async (req, res) => {
         res.status(500).json({ error: 'Failed to generate share options' });
     }
 });
+
+//activity screen endpoint
+app.get('/activity/:userId', async (req, res) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        const [ sharedCount, collectedCount ] = await Promise.all([
+            prisma.share.count({ where: { fromUserId: userId } }),
+            prisma.businessCard.count({ where: { userId } })
+        ]);
+        res.json({ sharedCount, collectedCount });
+        } catch (e) {
+            console.error('Activity error:', e);
+            res.status(500).json({ error: 'Failed to fetch activity' });
+        }
+    }
+);
+  
