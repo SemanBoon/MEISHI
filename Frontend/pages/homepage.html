@@ -42,24 +42,24 @@
       document.addEventListener('DOMContentLoaded', () => {
         const statusMessage = document.getElementById('status-message');
 
-        // Update fetch URL to use the correct endpoint with ID
-        fetch(`http://localhost:3000/homepage`)
+        // Updated URL to match backend's port and required :id parameter
+        fetch(`http://localhost:5432/homepage/1`)
           .then(response => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.text();  // Since the backend sends plain text, use .text()
+            return response.text();
           })
           .then(data => {
-            // Update the message with the data received
             statusMessage.textContent = `Connected to server successfully! ${data}`;
-            console.log(data); // Log the data for debugging
+            console.log(data);
           })
           .catch(err => {
             console.error('Error fetching data:', err);
             statusMessage.textContent = 'Unable to connect to server.';
           });
       });
+
     </script>
   </body>
 </html>

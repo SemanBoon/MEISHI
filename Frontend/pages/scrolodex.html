@@ -1,27 +1,113 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Scrolodex</title>
-    <link rel="stylesheet" href="../styles/style.css">
-    <script async src='./index.js'></script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scrolodex</title>
+  <style>
+    
+body {
+  font-family: Georgia, serif;
+  background-color: black;
+  color: white;
+  text-align: center;
+}
 
-  </head>
-  <body>
-    <h1>Scrolodex</h1>
-    <h4 id='date'></h4>
+#search {
+  width: 90%;
+  padding: 10px;
+  font-size: 16px;
+  margin: 10px 0;
+}
 
-    <div class="image-section">
+#contact-list {
+  max-height: 70vh;
+  overflow-y: auto;
+  text-align: left;
+  margin: 0 auto;
+  width: 90%;
+}
 
-        <div class="top-image">
-            <a href="homepage.html">
-                <img src="../images/MEISHI LOGO.png" alt="Top Image">
-            </a>
-        </div>
+.contact {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #4682B4;
+  border-bottom: 2px solid #000;
+}
 
-        <div class="image-grid">
-            <img src="../images/Scrolodex.png" alt="Image 2"></a>
-        </div>
+.contact:nth-child(even) {
+  background-color: #003366;
+}
 
-      </div>
-  </body>
+.star {
+  color: gold;
+}
+
+  </style>
+</head>
+<body>
+  <h1>Scrolodex</h1>
+  <input type="text" id="search" placeholder="search" />
+  <div id="contact-list"></div>
+</body>
+</html>
+
+
+<div class="toolbar">
+<a href="profile.html">
+  <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
+</a>
+<a href="homepage.html">
+  <img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon">
+</a>
+<a href="settings.html">
+  <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
+</a>
+</div>
+
+
+  <script>
+const contacts = [
+  { name: "Caine Abel", favorite: false },
+  { name: "Sam Gamgee", favorite: true },
+  { name: "Helen Parr", favorite: false },
+  { name: "Peter Parker", favorite: true },
+  { name: "Audrey Hepburn", favorite: true },
+  { name: "Max Bialystock", favorite: false },
+  { name: "Waco Kid", favorite: false },
+  { name: "Anya Anastasia", favorite: false },
+  { name: "Frank Abagnale", favorite: false },
+  { name: "Harlene Quinzel", favorite: false },
+  { name: "Tom & Jerry", favorite: false }
+];
+
+function renderContacts(contactList) {
+  const container = document.getElementById('contact-list');
+  container.innerHTML = '';
+
+  const sorted = contactList.sort((a, b) => a.name.localeCompare(b.name));
+  sorted.forEach(person => {
+    const div = document.createElement('div');
+    div.className = 'contact';
+    div.innerHTML = `
+      <span>${person.name}</span>
+      ${person.favorite ? '<span class="star">⭐</span>' : ''}
+    `;
+    container.appendChild(div);
+  });
+}
+
+document.getElementById('search').addEventListener('input', function(e) {
+  const query = e.target.value.toLowerCase();
+  const filtered = contacts.filter(c => c.name.toLowerCase().includes(query));
+  renderContacts(filtered);
+});
+
+window.onload = () => {
+  renderContacts(contacts);
+};
+
+  </script>
+</body>
 </html>
