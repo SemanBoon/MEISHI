@@ -13,7 +13,7 @@ app.use(cors())
 
 const path = require('path');
 const prisma = new PrismaClient();
-const PORT = process.env.PORT || 5432;
+const PORT = process.env.PORT || 5000;
 
 
 server.listen(PORT, () => {
@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 
 
 app.post('/user-signup', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, birthday, password } = req.body;
 
     try {
         const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -243,7 +243,15 @@ app.get('/cards/:id/qr', async (req, res) => {
 
         // Generate QR as a PNG image
         const qrImage = await QRCode.toDataURL(qrData);
-        res.json({ qrImage, cardDetails: card });  // Send QR + card data
+       
+        // Create a shareable link
+        const shareableLink = `http://yourdomain.com/card/${card.id}`; // Replace with your frontend URL
+
+        res.json({
+            qrImage,
+            shareableLink, // Send both to frontend
+            cardDetails: card
+        });
 
     } catch (error) {
         res.status(500).json({ error: 'Failed to generate QR code' });
@@ -251,7 +259,7 @@ app.get('/cards/:id/qr', async (req, res) => {
 });
 
 //gets scrollodex of a user
-//frontend is getting array of business cards (empty array if user has none)
+//returns array of business cards of user(empty array if user has none)
 app.get('/scrollodex/:userId', async (req, res) => {
     const userId = parseInt(req.params.userId);
 
@@ -326,14 +334,7 @@ app.post('/cards/share', async (req, res) => {
                         platform: s.platform
                     }))
                 }
-            }
-        });
-
-        await prisma.share.create({
-            data: {
-              cardId: cardId,
-              fromUserId: card.userId,
-              toUserId: recipientUserId
+                // Assign to recipient
             }
         });
 
@@ -378,20 +379,3 @@ app.get('/cards/:id/share', async (req, res) => {
         res.status(500).json({ error: 'Failed to generate share options' });
     }
 });
-
-//activity screen endpoint
-app.get('/activity/:userId', async (req, res) => {
-    try {
-        const userId = parseInt(req.params.userId);
-        const [ sharedCount, collectedCount ] = await Promise.all([
-            prisma.share.count({ where: { fromUserId: userId } }),
-            prisma.businessCard.count({ where: { userId } })
-        ]);
-        res.json({ sharedCount, collectedCount });
-        } catch (e) {
-            console.error('Activity error:', e);
-            res.status(500).json({ error: 'Failed to fetch activity' });
-        }
-    }
-);
-  
