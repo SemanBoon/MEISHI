@@ -43,7 +43,7 @@
         const statusMessage = document.getElementById('status-message');
 
         // Updated URL to match backend's port and required :id parameter
-        fetch(`http://localhost:5432/homepage/1`)
+        fetch(`http://localhost:5000/homepage/1`)
           .then(response => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);

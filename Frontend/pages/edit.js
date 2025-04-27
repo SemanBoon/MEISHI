@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Get user's business card
-    const res = await fetch("http://localhost:5432/cards");
+    const res = await fetch("http://localhost:5000/cards");
     const cards = await res.json();
     const card = cards.find(c => c.user.id == userId);
 
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
 
       try {
-        const updateRes = await fetch("http://localhost:5432/update-business-cards", {
+        const updateRes = await fetch("http://localhost:5000/update-business-cards", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
