@@ -264,7 +264,7 @@ app.get('/scrollodex/:userId', async (req, res) => {
     const userId = parseInt(req.params.userId);
 
     try {
-        const userWithCards = await prisma.user.findUnique({
+        let userWithCards = await prisma.user.findUnique({
             where: { id: userId },
             include: {
                 cards: {
@@ -278,6 +278,26 @@ app.get('/scrollodex/:userId', async (req, res) => {
 
         if (!userWithCards) {
             return res.status(404).json({ error: 'User not found' });
+        }
+
+        // 🚨 Hardcode test scrollodex if user has no cards
+        if (userWithCards.cards.length === 0) {
+            userWithCards.cards = [
+                {
+                    id: 1,
+                    name: "Test Friend 1",
+                    favorite: false,
+                    websites: [],
+                    socials: []
+                },
+                {
+                    id: 2,
+                    name: "Test Friend 2",
+                    favorite: true,
+                    websites: [],
+                    socials: []
+                }
+            ];
         }
 
         res.status(200).json({
@@ -294,6 +314,7 @@ app.get('/scrollodex/:userId', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch scrollodex' });
     }
 });
+
 
 
 
