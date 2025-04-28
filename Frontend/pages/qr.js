@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Get user's business card
-    const res = await fetch("http://localhost:5432/cards");
+    const res = await fetch("http://localhost:9000/cards");
     const cards = await res.json();
     const card = cards.find(c => c.user.id == userId);
 
     if (!card) return alert("Card not found");
 
-    const qrRes = await fetch(`http://localhost:5432/cards/${card.id}/qr`);
+    const qrRes = await fetch(`http://localhost:9000/cards/${card.id}/qr`);
     const data = await qrRes.json();
 
     const img = document.createElement("img");

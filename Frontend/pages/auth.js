@@ -11,15 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("email").value;
       const birthday = document.getElementById("birthday").value;
       const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirm-password").value;
+      // const confirmPassword = document.getElementById("confirm-password").value;
 
-      if (password !== confirmPassword) {
-        alert("Passwords do not match!");
-        return;
-      }
+      // if (password !== confirmPassword) {
+      //   alert("Passwords do not match!");
+      //   return;
+      // }
 
       try {
-        const res = await fetch("http://localhost:5432/user-signup", {
+        const res = await fetch("http://localhost:9000/user-signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, birthday, email, password })
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById("password").value;
 
       try {
-        const res = await fetch("http://localhost:5432/login", {
+        const res = await fetch("http://localhost:9000/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password })

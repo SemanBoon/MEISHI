@@ -7,13 +7,15 @@ const bcrypt = require('bcrypt');
 const app = express();
 const server = http.createServer(app);
 const QRCode = require('qrcode');
+module.exports = app;
+
 
 app.use(express.json());
 app.use(cors())
 
 const path = require('path');
 const prisma = new PrismaClient();
-const PORT = process.env.PORT || 5432;
+const PORT = process.env.PORT || 9000;
 
 
 server.listen(PORT, () => {
@@ -27,7 +29,7 @@ app.get("/", (req, res) => {
 
 
 app.post('/user-signup', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, birthday, password } = req.body;
 
     try {
         const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -35,14 +37,14 @@ app.post('/user-signup', async (req, res) => {
             return res.status(400).json({ error: 'Email already in use' });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10); // 🔐 hash it
+        const hashedPassword = await bcrypt.hash(password, 10); // 
 
         const newUser = await prisma.user.create({
             data: {
                 name,
                 email,
-                password: hashedPassword, // ✅ this is what was missing
-                birthday: null
+                password: hashedPassword, 
+                birthday: birthday ? new Date(birthday) : null
             }
         });
 
@@ -71,22 +73,6 @@ app.post('/login', async (req, res) => {
         res.status(200).json({ message: 'Login successful', user });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-
-module.exports = app;
-
-// Get all users with their cards
-app.get('/users', async (req, res) => {
-    try {
-        const users = await prisma.user.findMany({
-            include: { cards: true } // Include related business cards
-        });
-        res.status(200).json(users);
-    } catch (error) {
-        console.error('Error fetching users:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -134,18 +120,31 @@ app.post('/create-business-card', async (req, res) => {
     }
 });
 
-//get all business cards
-app.get('/cards', async (req, res) => {
-    try {
-        const cards = await prisma.businessCard.findMany({
-            include: { user: true } // Include related user data
-        });
-        res.status(200).json(cards);
-    } catch (error) {
-        console.error('Error fetching business cards:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
+// Get all users with their cards
+// app.get('/users', async (req, res) => {
+//     try {
+//         const users = await prisma.user.findMany({
+//             include: { cards: true } // Include related business cards
+//         });
+//         res.status(200).json(users);
+//     } catch (error) {
+//         console.error('Error fetching users:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
+
+// //get all business cards
+// app.get('/cards', async (req, res) => {
+//     try {
+//         const cards = await prisma.businessCard.findMany({
+//             include: { user: true } // Include related user data
+//         });
+//         res.status(200).json(cards);
+//     } catch (error) {
+//         console.error('Error fetching business cards:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
 
 
 //api for homepage"
@@ -241,12 +240,16 @@ app.get('/cards/:id/qr', async (req, res) => {
             customBio: card.customBio
         });
 
-        // Generate QR as a PNG image
-        const qrImage = await QRCode.toDataURL(qrData);
-        res.json({ qrImage, cardDetails: card });  // Send QR + card data
+        const shareableLink = `http://yourdomain.com/card/${card.id}`; // Replace with your frontend URL
+
+        res.json({
+            qrImage,
+            shareableLink, // Send both to frontend
+            cardDetails: card
+        });
 
     } catch (error) {
-        res.status(500).json({ error: 'Failed to generate QR code' });
+        res.status(500).json({ error: 'Failed to generate share options' });
     }
 });
 
@@ -345,39 +348,39 @@ app.post('/cards/share', async (req, res) => {
 });
 
 // to get the QR code image, as well as the shareable link
-app.get('/cards/:id/share', async (req, res) => {
-    try {
-        const cardId = parseInt(req.params.id);
-        const card = await prisma.businessCard.findUnique({
-            where: { id: cardId },
-            include: { user: true }
-        });
+// app.get('/cards/:id/share', async (req, res) => {
+//     try {
+//         const cardId = parseInt(req.params.id);
+//         const card = await prisma.businessCard.findUnique({
+//             where: { id: cardId },
+//             include: { user: true }
+//         });
 
-        if (!card) {
-            return res.status(404).json({ error: 'Card not found' });
-        }
+//         if (!card) {
+//             return res.status(404).json({ error: 'Card not found' });
+//         }
 
-        // Generate QR code (as before)
-        const qrData = JSON.stringify({
-            cardId: card.id,
-            jobTitle: card.jobTitle,
-            user: card.user.name
-        });
-        const qrImage = await QRCode.toDataURL(qrData);
+//         // Generate QR code (as before)
+//         const qrData = JSON.stringify({
+//             cardId: card.id,
+//             jobTitle: card.jobTitle,
+//             user: card.user.name
+//         });
+//         const qrImage = await QRCode.toDataURL(qrData);
 
-        // Create a shareable link
-        const shareableLink = `http://yourdomain.com/card/${card.id}`; // Replace with your frontend URL
+//         // Create a shareable link
+//         const shareableLink = `http://yourdomain.com/card/${card.id}`; // Replace with your frontend URL
 
-        res.json({
-            qrImage,
-            shareableLink, // Send both to frontend
-            cardDetails: card
-        });
+//         res.json({
+//             qrImage,
+//             shareableLink, // Send both to frontend
+//             cardDetails: card
+//         });
 
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to generate share options' });
-    }
-});
+//     } catch (error) {
+//         res.status(500).json({ error: 'Failed to generate share options' });
+//     }
+// });
 
 //activity screen endpoint
 app.get('/activity/:userId', async (req, res) => {
