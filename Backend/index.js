@@ -240,6 +240,10 @@ app.get('/cards/:id/qr', async (req, res) => {
             customBio: card.customBio
         });
 
+        // Generate QR as a PNG image
+        const qrImage = await QRCode.toDataURL(qrData);
+       
+        // Create a shareable link
         const shareableLink = `http://yourdomain.com/card/${card.id}`; // Replace with your frontend URL
 
         res.json({
@@ -254,12 +258,12 @@ app.get('/cards/:id/qr', async (req, res) => {
 });
 
 //gets scrollodex of a user
-//frontend is getting array of business cards (empty array if user has none)
+//returns array of business cards of user(empty array if user has none)
 app.get('/scrollodex/:userId', async (req, res) => {
     const userId = parseInt(req.params.userId);
 
     try {
-        const userWithCards = await prisma.user.findUnique({
+        let userWithCards = await prisma.user.findUnique({
             where: { id: userId },
             include: {
                 cards: {
@@ -273,6 +277,26 @@ app.get('/scrollodex/:userId', async (req, res) => {
 
         if (!userWithCards) {
             return res.status(404).json({ error: 'User not found' });
+        }
+
+        // 🚨 Hardcode test scrollodex if user has no cards
+        if (userWithCards.cards.length === 0) {
+            userWithCards.cards = [
+                {
+                    id: 1,
+                    name: "Test Friend 1",
+                    favorite: false,
+                    websites: [],
+                    socials: []
+                },
+                {
+                    id: 2,
+                    name: "Test Friend 2",
+                    favorite: true,
+                    websites: [],
+                    socials: []
+                }
+            ];
         }
 
         res.status(200).json({
@@ -289,6 +313,7 @@ app.get('/scrollodex/:userId', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch scrollodex' });
     }
 });
+
 
 
 
@@ -329,14 +354,7 @@ app.post('/cards/share', async (req, res) => {
                         platform: s.platform
                     }))
                 }
-            }
-        });
-
-        await prisma.share.create({
-            data: {
-              cardId: cardId,
-              fromUserId: card.userId,
-              toUserId: recipientUserId
+                // Assign to recipient
             }
         });
 
@@ -377,10 +395,7 @@ app.post('/cards/share', async (req, res) => {
 //             cardDetails: card
 //         });
 
-//     } catch (error) {
-//         res.status(500).json({ error: 'Failed to generate share options' });
-//     }
-// });
+
 
 //activity screen endpoint
 app.get('/activity/:userId', async (req, res) => {

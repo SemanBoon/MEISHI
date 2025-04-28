@@ -67,47 +67,57 @@ body {
 </div>
 
 
-  <script>
-const contacts = [
-  { name: "Caine Abel", favorite: false },
-  { name: "Sam Gamgee", favorite: true },
-  { name: "Helen Parr", favorite: false },
-  { name: "Peter Parker", favorite: true },
-  { name: "Audrey Hepburn", favorite: true },
-  { name: "Max Bialystock", favorite: false },
-  { name: "Waco Kid", favorite: false },
-  { name: "Anya Anastasia", favorite: false },
-  { name: "Frank Abagnale", favorite: false },
-  { name: "Harlene Quinzel", favorite: false },
-  { name: "Tom & Jerry", favorite: false }
-];
-
-function renderContacts(contactList) {
-  const container = document.getElementById('contact-list');
-  container.innerHTML = '';
-
-  const sorted = contactList.sort((a, b) => a.name.localeCompare(b.name));
-  sorted.forEach(person => {
-    const div = document.createElement('div');
-    div.className = 'contact';
-    div.innerHTML = `
-      <span>${person.name}</span>
-      ${person.favorite ? '<span class="star">⭐</span>' : ''}
-    `;
-    container.appendChild(div);
+<script>
+  async function fetchContacts(userId) {
+    try {
+      const response = await fetch(`http://localhost:5000/scrollodex/${userId}`); // change port if needed
+      if (!response.ok) {
+        throw new Error('Failed to fetch scrollodex');
+      }
+      const data = await response.json();
+      return data.scrollodex.map(card => ({
+        name: card.name,      // adjust this based on your backend data
+        favorite: card.favorite || false  // if you have a favorite field
+      }));
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+      return [];
+    }
+  }
+  
+  function renderContacts(contactList) {
+    const container = document.getElementById('contact-list');
+    container.innerHTML = '';
+  
+    const sorted = contactList.sort((a, b) => a.name.localeCompare(b.name));
+    sorted.forEach(person => {
+      const div = document.createElement('div');
+      div.className = 'contact';
+      div.innerHTML = `
+        <span>${person.name}</span>
+        ${person.favorite ? '<span class="star">⭐</span>' : ''}
+      `;
+      container.appendChild(div);
+    });
+  }
+  
+  document.getElementById('search').addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    const filtered = window.allContacts.filter(c => c.name.toLowerCase().includes(query));
+    renderContacts(filtered);
   });
-}
-
-document.getElementById('search').addEventListener('input', function(e) {
-  const query = e.target.value.toLowerCase();
-  const filtered = contacts.filter(c => c.name.toLowerCase().includes(query));
-  renderContacts(filtered);
-});
-
-window.onload = () => {
-  renderContacts(contacts);
-};
-
+  
+  window.onload = async () => {
+    const userId = localStorage.getItem('userId'); // or however you're tracking logged-in user
+    if (!userId) {
+      alert('User not logged in.');
+      return;
+    }
+    const contacts = await fetchContacts(userId);
+    window.allContacts = contacts;  // save for searching
+    renderContacts(contacts);
+  };
   </script>
+  
 </body>
 </html>
