@@ -118,7 +118,7 @@ body {
     }
 
     try {
-        const response = await fetch(`http://localhost:5000/scrollodex/${userId}`);
+        const response = await fetch(`http://localhost:9000/scrollodex/${userId}`);
         if (!response.ok) {
             throw new Error('Failed to fetch contacts');
         }
