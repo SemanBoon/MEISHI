@@ -48,6 +48,7 @@ body {
 </head>
 <body>
   <h1>Scrolodex</h1>
+  <h1 id="scrollodex-title">Scrollodex</h1>
   <input type="text" id="search" placeholder="search" />
   <div id="contact-list"></div>
 </body>
@@ -108,15 +109,36 @@ body {
   });
   
   window.onload = async () => {
-    const userId = localStorage.getItem('userId'); // or however you're tracking logged-in user
+    const userId = localStorage.getItem('userId');
+
     if (!userId) {
-      alert('User not logged in.');
-      return;
+        alert('You must be logged in to access the Scrollodex.');
+        window.location.href = 'login.html';
+        return;
     }
-    const contacts = await fetchContacts(userId);
-    window.allContacts = contacts;  // save for searching
-    renderContacts(contacts);
-  };
+
+    try {
+        const response = await fetch(`http://localhost:5000/scrollodex/${userId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch contacts');
+        }
+        const data = await response.json();
+        
+        // ✅ Set the title to personalized user name
+        const title = document.getElementById('scrollodex-title');
+        title.textContent = `Scrollodex for ${data.user.name}`;
+
+        // ✅ Load and display contacts
+        const contacts = data.scrollodex || [];
+        window.allContacts = contacts;
+        renderContacts(contacts);
+
+    } catch (error) {
+        console.error('Failed to load scrollodex:', error);
+        alert('Something went wrong. Please try again.');
+    }
+};
+
   </script>
   
 </body>
