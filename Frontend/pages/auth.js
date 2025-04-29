@@ -6,11 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Check if user is already logged in
   function checkAuth() {
     // If we're not on the login or signup page and not logged in, redirect to login
-    if (!localStorage.getItem("userId") && 
+ /*   if (!localStorage.getItem("userId") && 
         !window.location.pathname.includes('login.html') && 
         !window.location.pathname.includes('signup.html')) {
       window.location.href = "login.html";
-    }
+    }*/
     
     // If we're on login/signup page and already logged in, redirect to homepage
     if (localStorage.getItem("userId") && 
