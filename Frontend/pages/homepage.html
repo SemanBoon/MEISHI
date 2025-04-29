@@ -41,9 +41,21 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const statusMessage = document.getElementById('status-message');
-
-        // Updated URL to match backend's port and required :id parameter
-        fetch(`http://localhost:5000/homepage/1`)
+        
+        // Get userId from localStorage (set during login)
+        const userId = localStorage.getItem('userId') || '1'; 
+        
+        // Create a container for the business card
+        const cardContainer = document.createElement('div');
+        cardContainer.id = 'business-card';
+        cardContainer.className = 'business-card';
+        
+        // Insert the card container before the image-grid
+        const imageGrid = document.querySelector('.image-grid');
+        imageGrid.parentNode.insertBefore(cardContainer, imageGrid);
+        
+        // Fetch the welcome message from backend
+        fetch(`http://localhost:9000/homepage/${userId}`)
           .then(response => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
@@ -51,15 +63,49 @@
             return response.text();
           })
           .then(data => {
-            statusMessage.textContent = `Connected to server successfully! ${data}`;
-            console.log(data);
+            // Update the welcome message
+            statusMessage.textContent = data;
+            console.log('Welcome message:', data);
+            
+            // Now fetch the user's details for the business card
+            return fetch(`http://localhost:9000/scrollodex/${userId}`);
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('User data:', data);
+            
+            // Display the user's basic info as a business card
+            if (data && data.user) {
+              const user = data.user;
+              
+              // Format birthday if it exists
+              let birthdayDisplay = '';
+              if (user.birthday) {
+                const birthday = new Date(user.birthday);
+                birthdayDisplay = `<p>Birthday: ${birthday.toLocaleDateString()}</p>`;
+              }
+              
+              // Create the business card HTML
+              cardContainer.innerHTML = `
+                <h2>${user.name}</h2>
+                <p>Email: ${user.email}</p>
+                ${birthdayDisplay}
+              `;
+            } else {
+              cardContainer.innerHTML = '<p>No user information available</p>';
+            }
           })
           .catch(err => {
             console.error('Error fetching data:', err);
             statusMessage.textContent = 'Unable to connect to server.';
+            cardContainer.innerHTML = '<p>Error loading your information</p>';
           });
       });
-
     </script>
   </body>
 </html>

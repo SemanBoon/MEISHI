@@ -71,7 +71,7 @@ body {
 <script>
   async function fetchContacts(userId) {
     try {
-      const response = await fetch(`http://localhost:5000/scrollodex/${userId}`); // change port if needed
+      const response = await fetch(`http://localhost:9000/scrollodex/${userId}`); // change port if needed
       if (!response.ok) {
         throw new Error('Failed to fetch scrollodex');
       }
