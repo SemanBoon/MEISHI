@@ -5,6 +5,7 @@ const http = require('http');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const app = express();
+app.use(express.static('Frontend'));
 const server = http.createServer(app);
 const QRCode = require('qrcode');
 module.exports = app;
