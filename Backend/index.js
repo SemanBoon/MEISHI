@@ -121,6 +121,81 @@ app.post('/create-business-card', async (req, res) => {
     }
 });
 
+app.use('/pdfs', express.static(path.join(__dirname, 'pdfs')));
+
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+
+app.get('/pdf/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        cards: {
+          include: {
+            websites: true,
+            socials: true
+          }
+        }
+      }
+    });
+
+    if (!user) return res.status(404).send('User not found');
+
+    const doc = new PDFDocument();
+    const filePath = path.join(__dirname, `pdfs/user_${userId}.pdf`);
+    const writeStream = fs.createWriteStream(filePath);
+
+    doc.pipe(writeStream);
+
+    // Header
+    doc.fontSize(22).text('MEISHI Business Card', { underline: true });
+    doc.moveDown();
+
+    // User Info
+    doc.fontSize(14).text(`Name: ${user.name}`);
+    doc.text(`Email: ${user.email}`);
+    if (user.birthday) doc.text(`Birthday: ${user.birthday}`);
+    doc.moveDown();
+
+    // Card Info (if any)
+    if (user.cards.length > 0) {
+      const card = user.cards[0];
+      doc.text(`Job Title: ${card.jobTitle || '-'}`);
+      doc.text(`Company: ${card.companyName || '-'}`);
+      doc.text(`Phone: ${card.phoneNumber || '-'}`);
+      doc.moveDown();
+
+      if (card.websites.length > 0) {
+        doc.text('Websites:');
+        card.websites.forEach(w => doc.text(`- ${w.label}: ${w.url}`));
+        doc.moveDown();
+      }
+
+      if (card.socials.length > 0) {
+        doc.text('Social Media:');
+        card.socials.forEach(s => doc.text(`- ${s.platform}: ${s.url}`));
+      }
+    } else {
+      doc.text('No business card data found.');
+    }
+
+    doc.end();
+
+    // Wait for file to finish writing
+    writeStream.on('finish', () => {
+      res.download(filePath);
+    });
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 // Get all users with their cards
 // app.get('/users', async (req, res) => {
 //     try {

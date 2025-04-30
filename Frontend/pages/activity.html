@@ -1,27 +1,32 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Activity</title>
-    <link rel="stylesheet" href="../styles/style.css">
-    <script async src='./index.js'></script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Activity</title>
+  <link rel="stylesheet" href="../styles/activity.css">
+</head>
+<body>
 
-  </head>
-  <body>
-    <h1>Activity</h1>
-    <h4 id='date'></h4>
+  <div class="activity-header">
+    <img src="../images/handshake.png" alt="Activity Icon" class="activity-icon">
+  </div>
 
-    <div class="image-section">
+  <div class="activity-feed" id="activity-feed">
+    <!-- Activities will load here -->
+  </div>
 
-        <div class="top-image">
-            <a href="homepage.html">
-                <img src="../images/MEISHI LOGO.png" alt="Top Image">
-            </a>
-        </div>
+  <div class="toolbar">
+    <a href="settings.html">
+      <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
+    </a>
+    <a href="homepage.html">
+      <img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon">
+    </a>
+    <a href="profile.html">
+      <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
+    </a>
+  </div>
 
-        <div class="image-grid">
-            <img src="../images/Handshake.png" alt="Image 4"></a>
-        </div>
-
-      </div>
-  </body>
+  <script src="activity.js"></script>
+</body>
 </html>
