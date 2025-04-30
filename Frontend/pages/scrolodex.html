@@ -44,10 +44,36 @@ body {
   color: gold;
 }
 
+.toolbar {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: 100%;
+      background-color: #333;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      margin: 0;
+    }
+  
+    .toolbar-icon {
+      width: 58x;
+      height: 58px;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+  
+    .toolbar-icon:hover {
+      transform: scale(1.1);
+    }
+
   </style>
 </head>
 <body>
-  <h1>Scrolodex</h1>
+  <h1 id="scrollodex-title">Scrollodex</h1>
   <input type="text" id="search" placeholder="search" />
   <div id="contact-list"></div>
 </body>
@@ -55,14 +81,14 @@ body {
 
 
 <div class="toolbar">
-<a href="profile.html">
-  <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
+<a href="settings.html">
+  <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
 </a>
 <a href="homepage.html">
   <img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon">
 </a>
-<a href="settings.html">
-  <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
+<a href="profile.html">
+  <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
 </a>
 </div>
 
@@ -85,21 +111,39 @@ body {
     }
   }
   
+// Capitalize function
+    function capitalizeName(name) {
+        if (!name) return '';
+        return name.split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ');
+    }
   function renderContacts(contactList) {
     const container = document.getElementById('contact-list');
     container.innerHTML = '';
-  
-    const sorted = contactList.sort((a, b) => a.name.localeCompare(b.name));
-    sorted.forEach(person => {
-      const div = document.createElement('div');
-      div.className = 'contact';
-      div.innerHTML = `
-        <span>${person.name}</span>
-        ${person.favorite ? '<span class="star">⭐</span>' : ''}
-      `;
-      container.appendChild(div);
+
+    if (contactList.length === 0) {
+        container.innerHTML = '<p>No contacts found. Add some!</p>';
+        return;
+    }
+
+    const sorted = contactList.sort((a, b) => {
+        const nameA = (a.name || a.companyName || a.jobTitle || "").toLowerCase();
+        const nameB = (b.name || b.companyName || b.jobTitle || "").toLowerCase();
+        return nameA.localeCompare(nameB);
     });
-  }
+
+    sorted.forEach(person => {
+        const div = document.createElement('div');
+        div.className = 'contact';
+        div.innerHTML = `
+            <span>${person.name || person.companyName || person.jobTitle || "Unnamed Contact"}</span>
+            ${person.favorite ? '<span class="star">⭐</span>' : ''}
+        `;
+        container.appendChild(div);
+    });
+}
+
   
   document.getElementById('search').addEventListener('input', function(e) {
     const query = e.target.value.toLowerCase();
@@ -108,15 +152,50 @@ body {
   });
   
   window.onload = async () => {
-    const userId = localStorage.getItem('userId'); // or however you're tracking logged-in user
+    const userId = localStorage.getItem('userId');
+
     if (!userId) {
-      alert('User not logged in.');
-      return;
+        alert('You must be logged in to access the Scrollodex.');
+        window.location.href = 'login.html';
+        return;
     }
-    const contacts = await fetchContacts(userId);
-    window.allContacts = contacts;  // save for searching
-    renderContacts(contacts);
-  };
+
+    // Get user name from localStorage like homepage.js does
+    const storedCardData = localStorage.getItem("cardData");
+    let userName = "User";
+    
+    if (storedCardData) {
+        try {
+            const cardData = JSON.parse(storedCardData);
+            userName = cardData.user?.name || "User";
+            
+            // Set the title using the same approach as homepage.js
+            const title = document.getElementById('scrollodex-title');
+            title.innerHTML = `<span style="color: #076aff;">${capitalizeName(userName)}</span>'s Scrollodex`;
+            
+        } catch (err) {
+            console.error("Error parsing stored card data:", err);
+        }
+    }
+
+    try {
+        const response = await fetch(`http://localhost:9000/scrollodex/${userId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch contacts');
+        }
+        const data = await response.json();
+        
+        // Load and display contacts
+        const contacts = data.scrollodex || [];
+        window.allContacts = contacts;
+        renderContacts(contacts);
+
+    } catch (error) {
+        console.error('Failed to load scrollodex:', error);
+        alert('Something went wrong. Please try again.');
+    }
+};
+
   </script>
   
 </body>

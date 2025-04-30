@@ -1,43 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>QR</title>
-  <link rel="stylesheet" href="../styles/style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <title>My MEISHI QR Code</title>
+  <link rel="stylesheet" href="../styles/qr.css">
+  <style>
+    .qr-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;        /* Bigger padding */
+  font-size: 18px;           /* Larger text */
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  margin: 10px;
+  background-color: rgba(255, 255, 255, 0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.username {
+    font-size: 48px; /* Adjust this value for scaling */
+    font-weight: bold; /* Optional: makes the text stand out */
+    text-align: center; /* Optional: centers the text in its container */
+    display: block; /* Ensures it's treated like a block element */
+  }
+
+.qr-actions button img {
+  width: 84px;               /* Slightly larger icon */
+  height: 84px;
+  margin-right: 10px;
+}
+
+.qr-actions button:hover {
+  transform: scale(1.05);
+}
+  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script defer src="../pages/qr.js"></script>
+
+<script>
+  new QRCode(document.getElementById("qrcode"), "Hello, MEISHI!");
+</script>
+
 </head>
 <body>
-  <h1>QR</h1>
-  <h4 id='date'></h4>
+  <div class="qr-wrapper">
+    <div class="qr-card">
+      <div id="qrcode" class="qr-code"></div>
+      <p class="username">@<span id="username">username</span></p>
+    </div>
+    
+    <div id="qrcode" class="qr-code"></div>
 
-  <div class="image-section">
-    <div id="qrcode" style="text-align: center; margin-top: 20px;"></div>
-  </div>
-
-  <div class="toolbar">    
+    <div class="qr-actions">
+      <button id="share-btn">
+        <img src="../images/share.png" alt="Share"> Share
+      </button>
+      <button id="copy-btn">
+        <img src="../images/copy.png" alt="Copy"> Copy
+      </button>
+      <button id="download-btn">
+        <img src="../images/download.png" alt="Download"> Download
+      </button>
+    </div>
+    
+  
+  <div class="toolbar">
     <a href="settings.html">
-        <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
+      <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
     </a>
     <a href="homepage.html">
-        <img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon">
+      <img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon">
     </a>
     <a href="profile.html">
-        <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
+      <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
     </a>
   </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const profileUrl = "profile.html"; // Change this to the actual live URL later
-      new QRCode(document.getElementById("qrcode"), {
-        text: profileUrl,
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    });
-  </script>
 </body>
-</html>
+
+

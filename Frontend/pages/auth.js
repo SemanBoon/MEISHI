@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const API_BASE_URL = "http://localhost:9000"; 
 
   // Check if user is already logged in
-  function checkAuth() {
+   function checkAuth() {
     // If we're not on the login or signup page and not logged in, redirect to login
-    if (!localStorage.getItem("userId") && 
-        !window.location.pathname.includes('login.html') &&
+ /*   if (!localStorage.getItem("userId") && 
+        !window.location.pathname.includes('login.html') && 
         !window.location.pathname.includes('signup.html')) {
       window.location.href = "login.html";
-    }
+    }*/
     
     // If we're on login/signup page and already logged in, redirect to homepage
     if (localStorage.getItem("userId") && 
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
          window.location.pathname.includes('signup.html'))) {
       window.location.href = "homepage.html";
     }
-  }
+   }
 
   // Run auth check when the page loads
   checkAuth();
@@ -244,7 +244,7 @@ function requireAuth() {
     return false;
   }
   return true;
-}
+ }
 
 function getCurrentUserId() {
   return localStorage.getItem("userId");

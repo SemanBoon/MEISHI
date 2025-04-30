@@ -8,29 +8,37 @@
   <style>
     body {
       margin: 0;
-      padding: 0 0 80px 0;
+      padding: 0 0 100px 0;
+      height: 100%;
+      overflow-y: auto;
       font-family: Arial, sans-serif;
       position: relative;
       background: linear-gradient(45deg, #ff7e5f, #feb47b);
+      background-attachment: scroll;
+      background-repeat: no-repeat;
+      background-size: cover;
       transition: background 0.5s ease;
     }
-
+    
     .banner-container {
       width: 100%;
       height: 200px;
+      margin: 0;
+      padding: 0;
     }
 
     .banner-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
     }
-
+  
     .profile-header-container {
       display: flex;
       align-items: center;
-      margin: 20px;
+      justify-content: flex-start;
+      margin-top: 20px;
+      margin-left: 20px;
     }
 
     .profile-pic-container {
@@ -39,25 +47,29 @@
       border-radius: 50%;
       overflow: hidden;
       border: 3px solid white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       background: white;
-      flex-shrink: 0;
+      margin-left: -150px;
+      margin-right: 20px; /* Space between picture and name */
     }
-
+  
     .profile-pic-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
+  
     .profile-wrapper {
       margin: 20px;
+      width: calc(100% - 40px); /* Adjust to avoid edge overlap */
+      box-sizing: border-box;
     }
-
+  
     .profile-info p {
       margin: 5px 0;
+      word-wrap: break-word;
     }
-
+  
     .profile-card {
       margin-top: 20px;
       background: rgba(255, 255, 255, 0.3);
@@ -65,7 +77,7 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
+  
     .profile-actions {
       margin-top: 20px;
     }
@@ -75,6 +87,10 @@
       padding: 10px 15px;
       font-size: 16px;
       cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
 
     .toolbar {
@@ -83,14 +99,14 @@
       align-items: center;
       width: 100%;
       background-color: #333;
-      padding: 20px 0;
+      padding: 10px 0;
       position: fixed;
       bottom: 0;
       left: 0;
       z-index: 1000;
       margin: 0;
     }
-
+  
     .toolbar-icon {
       width: 80px;
       height: 80px;
@@ -98,23 +114,90 @@
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-
+  
     .toolbar-icon:hover {
       transform: scale(1.1);
     }
-
-    #gradientSelect {
-      margin: 20px 0;
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
+  
+    .gradient-selector {
+      margin-top: 20px;
+    }
+  
+    #qrcode-container {
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+  
+    #qrcode {
       display: inline-block;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+    }
+  
+    h4 {
+      margin-left: 0;
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    #user-experience {
+      white-space: pre-wrap; /* Preserves newlines */
+    }
+
+    #user-education {
+      white-space: pre-wrap; /* Preserves newlines */
+    }
+
+        #user-experience {
+      white-space: pre-wrap; /* Preserves newlines */
+    }
+  
+    /* 📱 Mobile responsiveness for narrow screens */
+    @media (max-width: 500px) {
+      .profile-pic-container {
+        width: 80px;
+        height: 80px;
+      }
+  
+      .toolbar-icon {
+        width: 60px;
+        height: 60px;
+      }
+  
+      .banner-container {
+        height: 150px;
+      }
+  
+      .profile-header-container {
+        flex-direction: row;
+        align-items: center;
+      }
+  
+      .profile-header-container h1 {
+        font-size: 24px;
+        text-align: left;
+        margin-left: 10px;
+      }
+  
+      .profile-actions button {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+  
+      #gradientSelect {
+        font-size: 14px;
+      }
+  
+      .profile-wrapper {
+        margin: 10px;
+      }
     }
   </style>
 </head>
 <body>
 
-<!-- Banner from editcard.html -->
+<!-- Banner -->
 <div class="banner-container">
   <img id="bannerImage" src="../images/default-banner.png" alt="Banner">
 </div>
@@ -124,37 +207,46 @@
   <div class="profile-pic-container">
     <img id="profilePic" src="../images/Profile Icon.png" alt="Profile Picture" />
   </div>
-  <h1 id="user-name">Jane Doe</h1>
+  <h1 id="user-name"></h1>
 </div>
-
-<h4 id="date" style="margin-left:20px;"></h4>
 
 <div class="profile-wrapper">
   <!-- Username & Bio -->
   <div class="profile-info">
-    <p id="username">@janedoe</p>
-    <p id="user-desc">Aspiring software engineer passionate about innovation and design.</p>
+    <div class="profile-info">
+      <div style="display: flex; align-items: center;">
+        <span style="font-size: 16px; margin-right: 2px;">@</span>
+          <p id="username"></p>
+      </div>
+    <p id="user-email"></p>
+    <p id="user-desc"></p>
   </div>
 
-  <!-- Profile Card -->
-  <div class="profile-card">
-    <p id="user-school">Texas State University</p>
-    <p id="user-major">Computer Engineering</p>
-    <p id="user-grad">Graduation: May 2026</p>
+  <!-- Education -->
+  <div class="profile-education">
+    <h4>Education</h4>
+    <p id=""></p>
+    <p id="user-education"></p>
   </div>
 
-  <!-- Gradient Selector -->
-  <select id="gradientSelect">
-    <option value="gradient1">Sunset (Default)</option>
-    <option value="gradient2">Ocean</option>
-    <option value="gradient3">Forest</option>
-    <option value="gradient4">Galaxy</option>
-  </select>
+  <!-- Experience -->
+  <div class="profile-experience">
+    <h4>Experience</h4>
+    <p id=""></p>
+    <p id="user-experience"></p>
+  </div>
+
+    <!-- Projects -->
+  <div class="profile-projects">
+    <h4>Projects</h4>
+    <p id=""></p>
+    <p id="user-projects"></p>
+  </div>
 
   <!-- Action Buttons -->
   <div class="profile-actions">
-    <button onclick="window.location.href='qr.html'">QR Code</button>
-    <div id="qrcode-container" style="text-align: center; margin-top: 20px;">
+    <button id="qrButton">Show QR Code</button>
+    <div id="qrcode-container">
       <div id="qrcode"></div>
     </div>
     <button onclick="window.location.href='editcard.html'">Edit Card</button>
@@ -172,25 +264,6 @@
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="profile.js"></script>
-<script>
-  document.getElementById('gradientSelect').addEventListener('change', function() {
-    const selectedGradient = this.value;
-    switch (selectedGradient) {
-      case 'gradient1':
-        document.body.style.background = 'linear-gradient(45deg, #d33d3d, #f2833e)';
-        break;
-      case 'gradient2':
-        document.body.style.background = 'linear-gradient(45deg, #4ca1af, #c4e0e5)';
-        break;
-      case 'gradient3':
-        document.body.style.background = 'linear-gradient(45deg, #2d3e50, #4d9e3e)';
-        break;
-      case 'gradient4':
-        document.body.style.background = 'linear-gradient(45deg, #833ef2, #559cd6)';
-        break;
-    }
-  });
-</script>
 
 </body>
 </html>

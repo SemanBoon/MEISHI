@@ -121,6 +121,81 @@ app.post('/create-business-card', async (req, res) => {
     }
 });
 
+app.use('/pdfs', express.static(path.join(__dirname, 'pdfs')));
+
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+
+app.get('/pdf/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        cards: {
+          include: {
+            websites: true,
+            socials: true
+          }
+        }
+      }
+    });
+
+    if (!user) return res.status(404).send('User not found');
+
+    const doc = new PDFDocument();
+    const filePath = path.join(__dirname, `pdfs/user_${userId}.pdf`);
+    const writeStream = fs.createWriteStream(filePath);
+
+    doc.pipe(writeStream);
+
+    // Header
+    doc.fontSize(22).text('MEISHI Business Card', { underline: true });
+    doc.moveDown();
+
+    // User Info
+    doc.fontSize(14).text(`Name: ${user.name}`);
+    doc.text(`Email: ${user.email}`);
+    if (user.birthday) doc.text(`Birthday: ${user.birthday}`);
+    doc.moveDown();
+
+    // Card Info (if any)
+    if (user.cards.length > 0) {
+      const card = user.cards[0];
+      doc.text(`Job Title: ${card.jobTitle || '-'}`);
+      doc.text(`Company: ${card.companyName || '-'}`);
+      doc.text(`Phone: ${card.phoneNumber || '-'}`);
+      doc.moveDown();
+
+      if (card.websites.length > 0) {
+        doc.text('Websites:');
+        card.websites.forEach(w => doc.text(`- ${w.label}: ${w.url}`));
+        doc.moveDown();
+      }
+
+      if (card.socials.length > 0) {
+        doc.text('Social Media:');
+        card.socials.forEach(s => doc.text(`- ${s.platform}: ${s.url}`));
+      }
+    } else {
+      doc.text('No business card data found.');
+    }
+
+    doc.end();
+
+    // Wait for file to finish writing
+    writeStream.on('finish', () => {
+      res.download(filePath);
+    });
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 // Get all users with their cards
 // app.get('/users', async (req, res) => {
 //     try {
@@ -155,7 +230,7 @@ app.get('/homepage/:id', async (req, res) => {
         const profile = await prisma.user.findUnique({
             where: { id },
         });
-        res.send(`Welcome to the MEISHI, ${profile.name}`);
+        res.send(`Welcome to MEISHI, ${profile.name}`);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
@@ -260,11 +335,16 @@ app.get('/cards/:id/qr', async (req, res) => {
 
 //gets scrollodex of a user
 //returns array of business cards of user(empty array if user has none)
+// scrollodex route (fix version)
 app.get('/scrollodex/:userId', async (req, res) => {
     const userId = parseInt(req.params.userId);
 
+    if (!userId || isNaN(userId)) {
+        return res.status(400).json({ error: 'Invalid or missing user ID' });
+    }
+
     try {
-        let userWithCards = await prisma.user.findUnique({
+        const userWithCards = await prisma.user.findUnique({
             where: { id: userId },
             include: {
                 cards: {
@@ -280,24 +360,15 @@ app.get('/scrollodex/:userId', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // 🚨 Hardcode test scrollodex if user has no cards
-        if (userWithCards.cards.length === 0) {
-            userWithCards.cards = [
-                {
-                    id: 1,
-                    name: "Test Friend 1",
-                    favorite: false,
-                    websites: [],
-                    socials: []
+        if (!userWithCards.cards || userWithCards.cards.length === 0) {
+            return res.status(200).json({
+                user: {
+                    id: userWithCards.id,
+                    name: userWithCards.name,
+                    email: userWithCards.email
                 },
-                {
-                    id: 2,
-                    name: "Test Friend 2",
-                    favorite: true,
-                    websites: [],
-                    socials: []
-                }
-            ];
+                scrollodex: []  // 🚫 NO test friends
+            });
         }
 
         res.status(200).json({
