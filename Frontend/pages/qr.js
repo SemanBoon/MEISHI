@@ -1,6 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
   const userId = localStorage.getItem("userId");
-  const userName = localStorage.getItem("userName") || "YourNameHere";
+  let userName = "YourNameHere";
+  
+  // Try to get username from cardData in localStorage (as done in profile.js)
+  const cardDataStr = localStorage.getItem("cardData");
+  if (cardDataStr) {
+    try {
+      const cardData = JSON.parse(cardDataStr);
+      // Check if user and username exist in the cardData
+      if (cardData.user && cardData.user.username) {
+        userName = cardData.user.username;
+      }
+    } catch (err) {
+      console.error("Error parsing cardData from localStorage:", err);
+    }
+  }
 
   const qrContainer = document.getElementById("qrcode");
   const usernameDisplay = document.getElementById("username");
@@ -20,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Generate QR Code
   new QRCode(qrContainer, {
     text: pdfUrl,
-    width: 200,
-    height: 200,
+    width: 800,
+    height: 800,
     colorDark: "#000000",
     colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.H

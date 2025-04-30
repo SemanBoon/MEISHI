@@ -8,26 +8,30 @@
   <style>
     body {
       margin: 0;
-      padding: 0 0 80px 0;
+      padding: 250px 0 120px 0; /* bottom padding to keep Save button above toolbar */
       font-family: Arial, sans-serif;
       position: relative;
       background: linear-gradient(45deg, #ff7e5f, #feb47b);
       transition: background 0.5s ease;
+      overflow-y: auto; /* ensure vertical scrolling */
     }
-
+  
     .banner-container {
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 200px;
+      height: 400px;
+      min-height: 150px; /* ensure container doesn't collapse */
       position: relative;
     }
-
+  
     .banner-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
-
+  
     .image-upload-btn {
       position: absolute;
       bottom: 10px;
@@ -38,37 +42,37 @@
       padding: 8px 12px;
       cursor: pointer;
       font-size: 14px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
-
+  
     .image-upload-btn:hover {
       background-color: rgba(255, 255, 255, 1);
     }
-
+  
     .profile-header-container {
       display: flex;
       align-items: center;
       margin: 20px;
     }
-
+  
     .profile-pic-container {
       width: 120px;
       height: 120px;
       border-radius: 50%;
       overflow: hidden;
       border: 3px solid white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       background: white;
       flex-shrink: 0;
       position: relative;
     }
-
+  
     .profile-pic-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
+  
     .profile-pic-upload-btn {
       position: absolute;
       bottom: 5px;
@@ -83,13 +87,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
-
+  
     .profile-pic-upload-btn:hover {
       background-color: rgba(255, 255, 255, 1);
     }
-
+  
     .profile-header-container input[type="text"] {
       font-size: 24px;
       margin-left: 20px;
@@ -98,11 +102,16 @@
       border-radius: 4px;
       width: calc(100% - 160px);
     }
-
-    .profile-wrapper {
+  
+    .profile-wrapper,
+    .profile-info,
+    .profile-card,
+    .profile-actions {
       margin: 20px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
-
+  
     .profile-info input,
     .profile-info textarea {
       width: 100%;
@@ -112,33 +121,37 @@
       border: none;
       border-radius: 4px;
     }
-
+  
     .profile-info textarea {
       resize: vertical;
       min-height: 60px;
     }
-
-    .profile-card input {
+  
+    .profile-card input,
+    .profile-card textarea {
       width: 100%;
       padding: 8px;
       margin: 5px 0;
       font-size: 16px;
       border: none;
       border-radius: 4px;
+      resize: vertical;
+      min-height: 60px;
     }
-
+  
     .profile-card {
       margin-top: 20px;
       background: rgba(255, 255, 255, 0.3);
       padding: 15px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-
+  
     .profile-actions {
       margin-top: 20px;
+      margin-bottom: 120px; /* keep save button above fixed toolbar */
     }
-
+  
     .profile-actions button {
       margin: 10px 10px 0 0;
       padding: 10px 15px;
@@ -147,23 +160,23 @@
       border: none;
       border-radius: 4px;
       background-color: white;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
-
+  
     .toolbar {
       display: flex;
       justify-content: space-evenly;
       align-items: center;
       width: 100%;
       background-color: #333;
-      padding: 20px 0;
+      padding: 10px 0;
       position: fixed;
       bottom: 0;
       left: 0;
       z-index: 1000;
       margin: 0;
     }
-
+  
     .toolbar-icon {
       width: 80px;
       height: 80px;
@@ -171,11 +184,11 @@
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-
+  
     .toolbar-icon:hover {
       transform: scale(1.1);
     }
-
+  
     #gradientSelect {
       margin: 20px 0;
       padding: 10px;
@@ -184,12 +197,54 @@
       display: inline-block;
       width: 100%;
     }
-    
+  
     h4 {
       margin-left: 20px;
       color: rgba(0, 0, 0, 0.7);
     }
-  </style>
+  
+    /* Responsive adjustments for small screens */
+    @media (max-width: 500px) {
+      .profile-pic-container {
+        width: 80px;
+        height: 80px;
+      }
+  
+      .profile-header-container input[type="text"] {
+        font-size: 20px;
+        width: calc(100% - 100px);
+      }
+  
+      .toolbar-icon {
+        width: 60px;
+        height: 60px;
+      }
+  
+      .banner-container img {
+        max-height: 150px;
+        width: 100%;
+        object-fit: cover;
+      }
+
+      .image-upload-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+  
+      .profile-wrapper {
+        margin: 10px;
+      }
+  
+      .profile-actions button {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+  
+      #gradientSelect {
+        font-size: 14px;
+      }
+    }
+  </style>   
 </head>
 <body>
 
@@ -211,18 +266,34 @@
 <!-- Profile Content -->
 <div class="profile-wrapper">
 
-  <!-- Username & Description -->
-  <div class="profile-info">
-    <input type="text" id="usernameInput" placeholder="@username" />
-    <textarea id="descInput" placeholder="Write a brief bio about yourself..."></textarea>
+<!-- Username & Email -->
+<div class="profile-info">
+  <div style="display: flex; align-items: center;">
+    <span style="font-size: 18px; margin-right: 5px;">@</span>
+    <input type="text" id="usernameInput" placeholder="username" />
   </div>
+  <input type="email" id="emailInput" placeholder="you@example.com" />
+  <textarea id="descInput" placeholder="Write a brief bio about yourself..."></textarea>
+</div>
 
-  <!-- School, Major, Graduation -->
-  <div class="profile-card">
-    <input type="text" id="schoolInput" placeholder="University/College" />
-    <input type="text" id="majorInput" placeholder="Your Major" />
-    <input type="text" id="gradInput" placeholder="Graduation: Month Year" />
-  </div>
+<!-- Education -->
+<div class="profile-card">
+  <h4>Education</h4>
+  <textarea id="educationInput" placeholder="Your education details..."></textarea>
+</div>
+
+<!-- Experience -->
+<div class="profile-card">
+  <h4>Experience</h4>
+  <textarea id="experienceInput" placeholder="Your work experience..."></textarea>
+</div>
+
+<!-- Projects -->
+<div class="profile-card">
+  <h4>Projects</h4>
+  <textarea id="projectsInput" placeholder="Notable personal or team projects..."></textarea>
+</div>
+
 
   <!-- Gradient Selector -->
   <div class="gradient-selector">

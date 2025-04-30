@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initial load of card data
   loadCardData();
-
+  
+  
   function setupEventListeners() {
     // Handle gradient change
     const gradientSelect = document.getElementById("gradientSelect");
@@ -119,17 +120,20 @@ document.addEventListener("DOMContentLoaded", function() {
     const usernameElement = document.getElementById("username");
     if (usernameElement) usernameElement.textContent = card.user?.username || "";
     
+    const userEmailElement = document.getElementById("user-email");
+    if (userEmailElement) userEmailElement.textContent = card.email || "";
+
     const userDescElement = document.getElementById("user-desc");
     if (userDescElement) userDescElement.textContent = card.customBio || "";
     
-    const userSchoolElement = document.getElementById("user-school");
-    if (userSchoolElement) userSchoolElement.textContent = card.companyName || "";
+    const userExperienceElement = document.getElementById("user-experience");
+    if (userExperienceElement) userExperienceElement.textContent = card.experience || "";
     
-    const userMajorElement = document.getElementById("user-major");
-    if (userMajorElement) userMajorElement.textContent = card.jobTitle || "";
+    const userEducationElement = document.getElementById("user-education");
+    if (userEducationElement) userEducationElement.textContent = card.education || "";
     
-    const userGradElement = document.getElementById("user-grad");
-    if (userGradElement) userGradElement.textContent = card.graduationInfo || "";
+    const userProjectsElement = document.getElementById("user-projects");
+    if (userProjectsElement) userProjectsElement.textContent = card.projects || "";
 
     // Handle banner image
     if (card.bannerImageUrl) {
@@ -231,4 +235,8 @@ function updateGradient(selectedGradient) {
     case 'gradient3': document.body.style.background = 'linear-gradient(45deg, #2d3e50, #4d9e3e)'; break;
     case 'gradient4': document.body.style.background = 'linear-gradient(45deg, #833ef2, #559cd6)'; break;
   }
+
+  document.body.style.backgroundAttachment = 'fixed';
+  document.body.style.backgroundRepeat = 'no-repeat';
+  document.body.style.backgroundSize = 'cover';
 }

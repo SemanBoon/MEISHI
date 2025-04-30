@@ -44,10 +44,35 @@ body {
   color: gold;
 }
 
+.toolbar {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: 100%;
+      background-color: #333;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      margin: 0;
+    }
+  
+    .toolbar-icon {
+      width: 58x;
+      height: 58px;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+  
+    .toolbar-icon:hover {
+      transform: scale(1.1);
+    }
+
   </style>
 </head>
 <body>
-  <h1>Scrolodex</h1>
   <h1 id="scrollodex-title">Scrollodex</h1>
   <input type="text" id="search" placeholder="search" />
   <div id="contact-list"></div>
@@ -56,14 +81,14 @@ body {
 
 
 <div class="toolbar">
-<a href="profile.html">
-  <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
+<a href="settings.html">
+  <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
 </a>
 <a href="homepage.html">
   <img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon">
 </a>
-<a href="settings.html">
-  <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
+<a href="profile.html">
+  <img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon">
 </a>
 </div>
 
@@ -135,6 +160,24 @@ body {
         return;
     }
 
+    // Get user name from localStorage like homepage.js does
+    const storedCardData = localStorage.getItem("cardData");
+    let userName = "User";
+    
+    if (storedCardData) {
+        try {
+            const cardData = JSON.parse(storedCardData);
+            userName = cardData.user?.name || "User";
+            
+            // Set the title using the same approach as homepage.js
+            const title = document.getElementById('scrollodex-title');
+            title.innerHTML = `<span style="color: #076aff;">${capitalizeName(userName)}</span>'s Scrollodex`;
+            
+        } catch (err) {
+            console.error("Error parsing stored card data:", err);
+        }
+    }
+
     try {
         const response = await fetch(`http://localhost:9000/scrollodex/${userId}`);
         if (!response.ok) {
@@ -142,11 +185,7 @@ body {
         }
         const data = await response.json();
         
-        // ✅ Set the title to personalized user name
-        const title = document.getElementById('scrollodex-title');
-        title.textContent = `Scrollodex for ${capitalizeName(data.user.name)}`;
-
-        // ✅ Load and display contacts
+        // Load and display contacts
         const contacts = data.scrollodex || [];
         window.allContacts = contacts;
         renderContacts(contacts);

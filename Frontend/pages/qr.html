@@ -4,7 +4,40 @@
   <meta charset="UTF-8">
   <title>My MEISHI QR Code</title>
   <link rel="stylesheet" href="../styles/qr.css">
-  
+  <style>
+    .qr-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;        /* Bigger padding */
+  font-size: 18px;           /* Larger text */
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  margin: 10px;
+  background-color: rgba(255, 255, 255, 0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.username {
+    font-size: 48px; /* Adjust this value for scaling */
+    font-weight: bold; /* Optional: makes the text stand out */
+    text-align: center; /* Optional: centers the text in its container */
+    display: block; /* Ensures it's treated like a block element */
+  }
+
+.qr-actions button img {
+  width: 84px;               /* Slightly larger icon */
+  height: 84px;
+  margin-right: 10px;
+}
+
+.qr-actions button:hover {
+  transform: scale(1.05);
+}
+  </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script defer src="../pages/qr.js"></script>
@@ -18,7 +51,7 @@
   <div class="qr-wrapper">
     <div class="qr-card">
       <div id="qrcode" class="qr-code"></div>
-      <p class="username">@<span id="username">YourNameHere</span></p>
+      <p class="username">@<span id="username">username</span></p>
     </div>
     
     <div id="qrcode" class="qr-code"></div>
