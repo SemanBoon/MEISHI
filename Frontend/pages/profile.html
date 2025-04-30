@@ -75,6 +75,10 @@
       padding: 10px 15px;
       font-size: 16px;
       cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
 
     .toolbar {
@@ -103,18 +107,40 @@
       transform: scale(1.1);
     }
 
+    .gradient-selector {
+      margin-top: 20px;
+    }
+
     #gradientSelect {
-      margin: 20px 0;
       padding: 10px;
       font-size: 16px;
       cursor: pointer;
       display: inline-block;
+      width: 100%;
+    }
+    
+    #qrcode-container {
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    #qrcode {
+      display: inline-block;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    h4 {
+      margin-left: 0;
+      color: rgba(0, 0, 0, 0.7);
     }
   </style>
 </head>
 <body>
 
-<!-- Banner from editcard.html -->
+<!-- Banner -->
 <div class="banner-container">
   <img id="bannerImage" src="../images/default-banner.png" alt="Banner">
 </div>
@@ -124,37 +150,38 @@
   <div class="profile-pic-container">
     <img id="profilePic" src="../images/Profile Icon.png" alt="Profile Picture" />
   </div>
-  <h1 id="user-name">Jane Doe</h1>
+  <h1 id="user-name"></h1>
 </div>
-
-<h4 id="date" style="margin-left:20px;"></h4>
 
 <div class="profile-wrapper">
   <!-- Username & Bio -->
   <div class="profile-info">
-    <p id="username">@janedoe</p>
-    <p id="user-desc">Aspiring software engineer passionate about innovation and design.</p>
+    <p id="username"></p>
+    <p id="user-desc"></p>
   </div>
 
   <!-- Profile Card -->
   <div class="profile-card">
-    <p id="user-school">Texas State University</p>
-    <p id="user-major">Computer Engineering</p>
-    <p id="user-grad">Graduation: May 2026</p>
+    <p id="user-school"></p>
+    <p id="user-major"></p>
+    <p id="user-grad"></p>
   </div>
 
   <!-- Gradient Selector -->
-  <select id="gradientSelect">
-    <option value="gradient1">Sunset (Default)</option>
-    <option value="gradient2">Ocean</option>
-    <option value="gradient3">Forest</option>
-    <option value="gradient4">Galaxy</option>
-  </select>
+  <div class="gradient-selector">
+    <h4>Choose Theme:</h4>
+    <select id="gradientSelect">
+      <option value="gradient1">Sunset (Default)</option>
+      <option value="gradient2">Ocean</option>
+      <option value="gradient3">Forest</option>
+      <option value="gradient4">Galaxy</option>
+    </select>
+  </div>
 
   <!-- Action Buttons -->
   <div class="profile-actions">
-    <button onclick="window.location.href='qr.html'">QR Code</button>
-    <div id="qrcode-container" style="text-align: center; margin-top: 20px;">
+    <button id="qrButton">Show QR Code</button>
+    <div id="qrcode-container">
       <div id="qrcode"></div>
     </div>
     <button onclick="window.location.href='editcard.html'">Edit Card</button>
@@ -172,25 +199,6 @@
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="profile.js"></script>
-<script>
-  document.getElementById('gradientSelect').addEventListener('change', function() {
-    const selectedGradient = this.value;
-    switch (selectedGradient) {
-      case 'gradient1':
-        document.body.style.background = 'linear-gradient(45deg, #d33d3d, #f2833e)';
-        break;
-      case 'gradient2':
-        document.body.style.background = 'linear-gradient(45deg, #4ca1af, #c4e0e5)';
-        break;
-      case 'gradient3':
-        document.body.style.background = 'linear-gradient(45deg, #2d3e50, #4d9e3e)';
-        break;
-      case 'gradient4':
-        document.body.style.background = 'linear-gradient(45deg, #833ef2, #559cd6)';
-        break;
-    }
-  });
-</script>
 
 </body>
 </html>

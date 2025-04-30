@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Page</title>
-  <link rel="stylesheet" href="../styles/style.css">
-  <script async src="./index.js"></script>
+  <title>Edit Profile</title>
+  <link rel="stylesheet" href="../styles/style.css" />
   <style>
     body {
       margin: 0;
@@ -19,6 +18,7 @@
     .banner-container {
       width: 100%;
       height: 200px;
+      position: relative;
     }
 
     .banner-container img {
@@ -28,10 +28,27 @@
       display: block;
     }
 
+    .image-upload-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .image-upload-btn:hover {
+      background-color: rgba(255, 255, 255, 1);
+    }
+
     .profile-header-container {
       display: flex;
       align-items: center;
-      margin: 20px 20px 10px 20px;
+      margin: 20px;
     }
 
     .profile-pic-container {
@@ -43,6 +60,7 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
       background: white;
       flex-shrink: 0;
+      position: relative;
     }
 
     .profile-pic-container img {
@@ -51,30 +69,85 @@
       object-fit: cover;
     }
 
-    h1 {
-      margin: 0 0 0 20px;
-      font-size: 2em;
-    }
-
-    .profile-info {
+    .profile-pic-upload-btn {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 18px;
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .profile-pic-upload-btn:hover {
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    .profile-header-container input[type="text"] {
+      font-size: 24px;
+      margin-left: 20px;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      width: calc(100% - 160px);
+    }
+
+    .profile-wrapper {
       margin: 20px;
-      gap: 40px;
     }
 
-    .profile-column {
-      flex: 1 1 300px;
-      min-width: 300px;
+    .profile-info input,
+    .profile-info textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
     }
 
-    #profileEmail, #profilePhone {
-      font-style: italic;
-      margin-top: 5px;
+    .profile-info textarea {
+      resize: vertical;
+      min-height: 60px;
     }
 
-    .hidden {
-      display: none;
+    .profile-card input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .profile-card {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .profile-actions {
+      margin-top: 20px;
+    }
+
+    .profile-actions button {
+      margin: 10px 10px 0 0;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
 
     .toolbar {
@@ -91,12 +164,6 @@
       margin: 0;
     }
 
-    .toolbar a {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
     .toolbar-icon {
       width: 80px;
       height: 80px;
@@ -109,212 +176,81 @@
       transform: scale(1.1);
     }
 
-    .error-message {
-      color: red;
-      font-size: 0.9em;
-      margin-top: 10px;
-    }
-
     #gradientSelect {
-      margin: 20px;
+      margin: 20px 0;
       padding: 10px;
       font-size: 16px;
       cursor: pointer;
       display: inline-block;
+      width: 100%;
     }
-
-    .upload-label {
-      font-weight: bold;
-      margin-top: 20px;
-      display: block;
-    }
-
-    @media (max-width: 900px) {
-      .banner-container img {
-        width: 100%;
-        height: auto;
-        margin: 10px auto;
-        display: block;
-      }
-      .profile-header-container {
-        flex-direction: column;
-        align-items: center;
-        margin: 20px;
-      }
-      h1 {
-        margin: 10px 0 0 0;
-      }
-      .profile-info {
-        flex-direction: column;
-        margin: 20px;
-      }
+    
+    h4 {
+      margin-left: 20px;
+      color: rgba(0, 0, 0, 0.7);
     }
   </style>
 </head>
 <body>
 
+<!-- Banner -->
 <div class="banner-container">
   <img id="bannerImage" src="../images/default-banner.png" alt="Banner">
+  <button id="bannerUploadBtn" class="image-upload-btn">Change Banner</button>
 </div>
 
+<!-- Profile Header -->
 <div class="profile-header-container">
   <div class="profile-pic-container">
-    <img id="profilePic" src="../images/default-profile.png" alt="Profile Picture">
+    <img id="profilePic" src="../images/Profile Icon.png" alt="Profile Picture" />
+    <button id="profilePicUploadBtn" class="profile-pic-upload-btn">+</button>
   </div>
-  <h1 id="profileHeader">Your Name</h1>
+  <input type="text" id="nameInput" placeholder="Your Name" />
 </div>
 
-<h4 id="date" style="margin-left:20px;"></h4>
+<!-- Profile Content -->
+<div class="profile-wrapper">
 
-<div class="profile-info">
-  <div class="profile-column">
-    <p id="profileBio">This is a short bio about the user.</p>
-    <p id="profileEmail">Email: user@example.com</p>
-    <p id="profilePhone">Phone: 123-456-7890</p>
+  <!-- Username & Description -->
+  <div class="profile-info">
+    <input type="text" id="usernameInput" placeholder="@username" />
+    <textarea id="descInput" placeholder="Write a brief bio about yourself..."></textarea>
   </div>
 
-  <div class="profile-column">
-    <h3>Experience</h3>
-    <p id="profileExperience">-</p>
-
-    <h3>Education</h3>
-    <p id="profileEducation">-</p>
-
-    <h3>Projects</h3>
-    <p id="profileProjects">-</p>
+  <!-- School, Major, Graduation -->
+  <div class="profile-card">
+    <input type="text" id="schoolInput" placeholder="University/College" />
+    <input type="text" id="majorInput" placeholder="Your Major" />
+    <input type="text" id="gradInput" placeholder="Graduation: Month Year" />
   </div>
 
-  <div class="profile-column">
-    <button class="edit-btn" onclick="toggleEdit()">Edit Profile</button>
+  <!-- Gradient Selector -->
+  <div class="gradient-selector">
+    <h4>Choose Theme:</h4>
+    <select id="gradientSelect">
+      <option value="gradient1">Sunset (Default)</option>
+      <option value="gradient2">Ocean</option>
+      <option value="gradient3">Forest</option>
+      <option value="gradient4">Galaxy</option>
+    </select>
+  </div>
 
-    <div id="editFields" class="hidden">
-      <input type="text" id="nameInput" placeholder="Enter name"><br><br>
-      <textarea id="bioInput" rows="3" placeholder="Enter bio"></textarea><br><br>
-      <label class="upload-label" for="profilePicInputFile">Upload Profile Picture</label>
-      <input type="file" id="profilePicInputFile" accept="image/*"><br><br>
-      <label class="upload-label" for="bannerFileInput">Upload Banner Image</label>
-      <input type="file" id="bannerFileInput" accept="image/*"><br><br>
-      <input type="email" id="emailInput" placeholder="Enter email"><br><br>
-      <input type="tel" id="phoneInput" placeholder="Enter phone"><br><br>
-      <textarea id="experienceInput" rows="2" placeholder="Experience"></textarea><br><br>
-      <textarea id="educationInput" rows="2" placeholder="Education"></textarea><br><br>
-      <textarea id="projectsInput" rows="2" placeholder="Projects"></textarea><br><br>
-      <select id="gradientSelect">
-        <option value="gradient1">Sunset (Default)</option>
-        <option value="gradient2">Ocean</option>
-        <option value="gradient3">Forest</option>
-        <option value="gradient4">Galaxy</option>
-      </select><br><br>
-      <button class="edit-btn" onclick="saveChanges()">Save</button>
-      <div id="errorContainer" class="error-message hidden"></div>
-    </div>
+  <!-- Action Buttons -->
+  <div class="profile-actions">
+    <button id="saveBtn">Save</button>
+    <button onclick="window.location.href='profile.html'">Cancel</button>
   </div>
 </div>
 
+<!-- Toolbar -->
 <div class="toolbar">
   <a href="settings.html"><img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon"></a>
   <a href="homepage.html"><img src="../images/MEISHI Home Button.png" alt="Home" class="toolbar-icon"></a>
   <a href="profile.html"><img src="../images/Profile Icon.png" alt="Profile" class="toolbar-icon"></a>
 </div>
 
-<script>
-  function toggleEdit() {
-    const fields = document.getElementById('editFields');
-    const errorContainer = document.getElementById('errorContainer');
-    fields.classList.toggle('hidden');
-    errorContainer.classList.add('hidden');
-    errorContainer.innerText = '';
-  }
-
-  async function saveChanges() {
-    const nameInput = document.getElementById('nameInput').value.trim();
-    const bioInput = document.getElementById('bioInput').value.trim();
-    const emailInput = document.getElementById('emailInput').value.trim();
-    const phoneInput = document.getElementById('phoneInput').value.trim();
-    const experienceInput = document.getElementById('experienceInput').value.trim();
-    const educationInput = document.getElementById('educationInput').value.trim();
-    const projectsInput = document.getElementById('projectsInput').value.trim();
-    const bannerFileInput = document.getElementById('bannerFileInput');
-    const profilePicInputFile = document.getElementById('profilePicInputFile');
-    const errorContainer = document.getElementById('errorContainer');
-
-    errorContainer.classList.add('hidden');
-    errorContainer.innerText = '';
-
-    if (nameInput.length > 50) {
-      errorContainer.innerText = 'Name must be 50 characters or fewer.';
-      errorContainer.classList.remove('hidden');
-      return;
-    }
-
-    if (bioInput.length > 200) {
-      errorContainer.innerText = 'Bio must be 200 characters or fewer.';
-      errorContainer.classList.remove('hidden');
-      return;
-    }
-
-    document.getElementById('profileHeader').innerText = nameInput || 'Your Name';
-    document.getElementById('profileBio').innerText = bioInput || '[Insert bio here]';
-    document.getElementById('profileEmail').innerText = `Email: ${emailInput || 'user@example.com'}`;
-    document.getElementById('profilePhone').innerText = `Phone: ${phoneInput || '123-456-7890'}`;
-    document.getElementById('profileExperience').innerText = experienceInput || '-';
-    document.getElementById('profileEducation').innerText = educationInput || '-';
-    document.getElementById('profileProjects').innerText = projectsInput || '-';
-
-    if (profilePicInputFile.files && profilePicInputFile.files[0]) {
-      const reader = new FileReader();
-      reader.onload = e => { document.getElementById('profilePic').src = e.target.result; };
-      reader.readAsDataURL(profilePicInputFile.files[0]);
-    }
-
-    if (bannerFileInput.files && bannerFileInput.files[0]) {
-      const reader = new FileReader();
-      reader.onload = e => { document.getElementById('bannerImage').src = e.target.result; };
-      reader.readAsDataURL(bannerFileInput.files[0]);
-    }
-
-    const profileData = {
-      jobTitle: nameInput || 'No title',
-      companyName: 'Unknown Company',
-      phoneNumber: phoneInput,
-      websites: [],
-      socials: [],
-      customBio: bioInput,
-      userId: 1
-    };
-
-    try {
-      const response = await fetch('http://localhost:3000/create-business-card', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profileData)
-      });
-
-      if (!response.ok) {
-        const errorResult = await response.json();
-        throw new Error(errorResult.error || `Server error: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Profile saved to server:', result);
-
-    } catch (error) {
-      console.error('Error saving profile to server:', error);
-      errorContainer.innerText = `Save failed: ${error.message}`;
-      errorContainer.classList.remove('hidden');
-    }
-  }
-
-  document.getElementById('gradientSelect').addEventListener('change', function() {
-    const selectedGradient = this.value;
-    switch (selectedGradient) {
-      case 'gradient1': document.body.style.background = 'linear-gradient(45deg, #d33d3d, #f2833e)'; break;
-      case 'gradient2': document.body.style.background = 'linear-gradient(45deg, #4ca1af, #c4e0e5)'; break;
-      case 'gradient3': document.body.style.background = 'linear-gradient(45deg, #2d3e50, #4d9e3e)'; break;
-      case 'gradient4': document.body.style.background = 'linear-gradient(45deg, #833ef2, #559cd6)'; break;
-    }
-  });
-</script>
+<!-- Scripts -->
+<script src="edit.js"></script>
 
 </body>
 </html>
