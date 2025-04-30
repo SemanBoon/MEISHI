@@ -230,7 +230,7 @@ app.get('/homepage/:id', async (req, res) => {
         const profile = await prisma.user.findUnique({
             where: { id },
         });
-        res.send(`Welcome to the MEISHI, ${profile.name}`);
+        res.send(`Welcome to MEISHI, ${profile.name}`);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
