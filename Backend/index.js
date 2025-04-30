@@ -355,7 +355,6 @@ app.post('/cards/share', async (req, res) => {
                         platform: s.platform
                     }))
                 }
-                // Assign to recipient
             }
         });
 
