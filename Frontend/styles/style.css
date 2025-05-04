@@ -1,130 +1,162 @@
 /* General body styling */
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #1a1a1a; /* Dark theme */
-    color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #6ebec9;
+  color: white;
 }
 
 /* Center the top image */
 .top-image {
-    display: flex;  /* Enable flexbox for the container */
-    justify-content: center;  /* Center the image horizontally */
-    margin-top: 0px;  /* Optional: Adds a little space from the top */
-    margin-bottom: 80px;
+  display: flex;
+  justify-content: center;
+  margin-top: 0px;
+  margin-bottom: 80px;
 }
 
 .top-image img {
-    max-width: 225px;  /* Limits the width */
-    height: auto;  /* Keeps aspect ratio */
-    display: block;  /* Prevents image from being inline */
+  max-width: 225px;
+  height: auto;
+  display: block;
 }
 
 /* Grid for the images */
 .image-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2x2 grid */
-    gap: 20px;
-    justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1.5rem;
+  justify-items: center;   /* center each icon horizontally */
+  align-items: center;     /* center each icon vertically */
+  max-width: 600px;
+  margin: 2rem auto;
 }
 
 /* Make sure <a> elements wrap around images properly */
 .image-grid a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
 }
 
 /* Image styling */
 .image-grid img {
-    width: 150px;
-    height: 150px;
-    object-fit: contain; 
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
 }
 
-/* Remove extra link spacing */
-.image-grid a {
-    text-decoration: none;
-    display: block;
+.image-grid img:hover {
+  transform: scale(1.1);
 }
 
 /* Toolbar (Footer) styling */
 .toolbar {
-    display: flex;
-    justify-content: space-evenly; /* Evenly spaces icons across the toolbar */
-    align-items: center;          /* Centers icons vertically */
-    width: 100%;                  /* Ensures the toolbar spans the width of the screen */
-    background-color: #333;       /* Dark background for the footer */
-    padding: 10px 0;              /* Adds height and padding for spacing around the icons */
-    position: fixed;              /* Fixes the toolbar at the bottom */
-    bottom: 0;                    /* Places the toolbar at the bottom */
-    left: 0;
-    z-index: 1000;                /* Ensures toolbar stays above other content */
-    margin: 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  background-color: #333;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  margin: 0;
 }
 
 /* Icon styling inside the toolbar */
 .toolbar a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .toolbar-icon {
-    width: 80px;  /* Adjust the width of icons */
-    height: 80px; /* Adjust the height of icons */
-    object-fit: contain;
-    cursor: pointer; /* Adds cursor effect */
-    transition: transform 0.3s ease;  /* Smooth transition effect */
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 /* Example: Add a hover effect to icons */
 .toolbar-icon:hover {
-    transform: scale(1.1);  /* Slight zoom-in effect on hover */
+  transform: scale(1.1);
 }
 
-    /* 📱 Mobile responsiveness for narrow screens */
-    @media (max-width: 500px) {
-        .profile-pic-container {
-          width: 80px;
-          height: 80px;
-        }
-    
-        .toolbar-icon {
-          width: 60px;
-          height: 60px;
-        }
-    
-        .banner-container {
-          height: 150px;
-        }
-    
-        .profile-header-container {
-          flex-direction: row;
-          align-items: center;
-        }
-    
-        .profile-header-container h1 {
-          font-size: 20px;
-          margin-left: 10px;
-          flex: 1;
-          word-break: break-word;
-        }
-    
-        .profile-actions button {
-          font-size: 14px;
-          padding: 8px 12px;
-        }
-    
-        #gradientSelect {
-          font-size: 14px;
-        }
-    
-        .profile-wrapper {
-          margin: 10px;
-        }
-      }
+@media (max-width: 500px) {
+  .profile-pic-container {
+    width: 80px;
+    height: 80px;
+  }
+
+  .toolbar-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .banner-container {
+    height: 150px;
+  }
+
+  .profile-header-container {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .profile-header-container h1 {
+    font-size: 20px;
+    margin-left: 10px;
+    flex: 1;
+    word-break: break-word;
+  }
+
+  .profile-actions button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  #gradientSelect {
+    font-size: 14px;
+  }
+
+  .profile-wrapper {
+    margin: 10px;
+  }
+}
+
+.logout-icon {
+  width: 100px;
+  height: 100px;
+  background-color: #e6e6e6;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.logout-icon:hover {
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: scale(1.05);
+}
+
+.logout-icon:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.logout-icon img {
+  width: 50px;
+  height:50px;
+}
+

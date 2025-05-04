@@ -8,9 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let bannerImageDataUrl = localStorage.getItem("bannerImageDataUrl") || null;
   let profileImageDataUrl = localStorage.getItem("profileImageDataUrl") || null;
 
-  const user = { id: "12345" };
-  localStorage.setItem("userId", user.id);
-  const userId = user.id;
+  const userId = localStorage.getItem("userId"); 
   if (!userId) {
     alert("Not logged in.");
     window.location.href = "login.html";

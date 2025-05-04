@@ -1,9 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-  // Hardcoded user ID for testing - replace with localStorage approach when login is implemented
-  const user = { id: "12345" }; // Keep this line for testing
-  localStorage.setItem("userId", user.id); // Set it in localStorage for consistency
-  
-  const userId = user.id;
+  const userId = localStorage.getItem("userId"); // Set it in localStorage for consistency
+
   if (!userId) {
     alert("Not logged in.");
     window.location.href = "login.html";
@@ -206,19 +203,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // Notify other tabs
       localStorage.setItem("cardUpdatedAt", new Date().toISOString());
-      
-      // In a real implementation, you would also update the server
-      /*
-      const payload = {
-        cardId,
-        gradient
-      };
-      const response = await fetch("http://localhost:9000/update-business-cards", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      */
       
       console.log("Gradient preference saved successfully");
     } catch (e) {

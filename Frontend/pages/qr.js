@@ -29,13 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const pdfUrl = `http://localhost:5432/pdf/${userId}`;
+  const pdfUrl = `http://localhost:9000/pdf/${userId}`;
 
   // Generate QR Code
   new QRCode(qrContainer, {
     text: pdfUrl,
-    width: 800,
-    height: 800,
+    width: 400,
+    height: 400,
     colorDark: "#000000",
     colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.H

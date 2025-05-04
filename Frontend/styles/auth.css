@@ -1,5 +1,5 @@
 body {
-  background-color: #2c2928;
+  background-color: #6ebec9;
   font-family: 'Segoe UI', sans-serif;
   color: #f3f3f3;
   display: flex;
@@ -49,8 +49,6 @@ body {
     text-decoration: none;
     display: block;
 }
-
-
 
 .auth-container {
   background-color: #3c3c3c;

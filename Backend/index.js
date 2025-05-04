@@ -1,3 +1,7 @@
+//written by: Sewa and Bhavana
+//tested by: Sewa and Bhavana
+//debugged by: Sewa and Bhavana
+
 require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 const express = require('express');
@@ -44,7 +48,7 @@ app.post('/user-signup', async (req, res) => {
             data: {
                 name,
                 email,
-                password: hashedPassword, 
+                password: hashedPassword,
                 birthday: birthday ? new Date(birthday) : null
             }
         });
@@ -128,99 +132,72 @@ const fs = require('fs');
 
 
 app.get('/pdf/:userId', async (req, res) => {
-  const userId = parseInt(req.params.userId);
+    const userId = parseInt(req.params.userId);
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        cards: {
-          include: {
-            websites: true,
-            socials: true
-          }
-        }
-      }
-    });
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                cards: {
+                    include: {
+                        websites: true,
+                        socials: true
+                    }
+                }
+            }
+        });
 
-    if (!user) return res.status(404).send('User not found');
+        if (!user) return res.status(404).send('User not found');
 
-    const doc = new PDFDocument();
-    const filePath = path.join(__dirname, `pdfs/user_${userId}.pdf`);
-    const writeStream = fs.createWriteStream(filePath);
+        const doc = new PDFDocument();
+        const filePath = path.join(__dirname, `pdfs/user_${userId}.pdf`);
+        const writeStream = fs.createWriteStream(filePath);
 
-    doc.pipe(writeStream);
+        doc.pipe(writeStream);
 
-    // Header
-    doc.fontSize(22).text('MEISHI Business Card', { underline: true });
-    doc.moveDown();
-
-    // User Info
-    doc.fontSize(14).text(`Name: ${user.name}`);
-    doc.text(`Email: ${user.email}`);
-    if (user.birthday) doc.text(`Birthday: ${user.birthday}`);
-    doc.moveDown();
-
-    // Card Info (if any)
-    if (user.cards.length > 0) {
-      const card = user.cards[0];
-      doc.text(`Job Title: ${card.jobTitle || '-'}`);
-      doc.text(`Company: ${card.companyName || '-'}`);
-      doc.text(`Phone: ${card.phoneNumber || '-'}`);
-      doc.moveDown();
-
-      if (card.websites.length > 0) {
-        doc.text('Websites:');
-        card.websites.forEach(w => doc.text(`- ${w.label}: ${w.url}`));
+        // Header
+        doc.fontSize(22).text('MEISHI Business Card', { underline: true });
         doc.moveDown();
-      }
 
-      if (card.socials.length > 0) {
-        doc.text('Social Media:');
-        card.socials.forEach(s => doc.text(`- ${s.platform}: ${s.url}`));
-      }
-    } else {
-      doc.text('No business card data found.');
+        // User Info
+        doc.fontSize(14).text(`Name: ${user.name}`);
+        doc.text(`Email: ${user.email}`);
+        if (user.birthday) doc.text(`Birthday: ${user.birthday}`);
+        doc.moveDown();
+
+        // Card Info (if any)
+        if (user.cards.length > 0) {
+            const card = user.cards[0];
+            doc.text(`Job Title: ${card.jobTitle || '-'}`);
+            doc.text(`Company: ${card.companyName || '-'}`);
+            doc.text(`Phone: ${card.phoneNumber || '-'}`);
+            doc.moveDown();
+
+            if (card.websites.length > 0) {
+                doc.text('Websites:');
+                card.websites.forEach(w => doc.text(`- ${w.label}: ${w.url}`));
+                doc.moveDown();
+            }
+
+            if (card.socials.length > 0) {
+                doc.text('Social Media:');
+                card.socials.forEach(s => doc.text(`- ${s.platform}: ${s.url}`));
+            }
+        } else {
+            doc.text('No business card data found.');
+        }
+
+        doc.end();
+
+        // Wait for file to finish writing
+        writeStream.on('finish', () => {
+            res.download(filePath);
+        });
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).send('Internal Server Error');
     }
-
-    doc.end();
-
-    // Wait for file to finish writing
-    writeStream.on('finish', () => {
-      res.download(filePath);
-    });
-  } catch (error) {
-    console.error('Error generating PDF:', error);
-    res.status(500).send('Internal Server Error');
-  }
 });
-
-
-// Get all users with their cards
-// app.get('/users', async (req, res) => {
-//     try {
-//         const users = await prisma.user.findMany({
-//             include: { cards: true } // Include related business cards
-//         });
-//         res.status(200).json(users);
-//     } catch (error) {
-//         console.error('Error fetching users:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// });
-
-// //get all business cards
-// app.get('/cards', async (req, res) => {
-//     try {
-//         const cards = await prisma.businessCard.findMany({
-//             include: { user: true } // Include related user data
-//         });
-//         res.status(200).json(cards);
-//     } catch (error) {
-//         console.error('Error fetching business cards:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// });
 
 
 //api for homepage"
@@ -318,7 +295,7 @@ app.get('/cards/:id/qr', async (req, res) => {
 
         // Generate QR as a PNG image
         const qrImage = await QRCode.toDataURL(qrData);
-       
+
         // Create a shareable link
         const shareableLink = `http://yourdomain.com/card/${card.id}`; // Replace with your frontend URL
 
@@ -436,51 +413,72 @@ app.post('/cards/share', async (req, res) => {
     }
 });
 
-// to get the QR code image, as well as the shareable link
-// app.get('/cards/:id/share', async (req, res) => {
-//     try {
-//         const cardId = parseInt(req.params.id);
-//         const card = await prisma.businessCard.findUnique({
-//             where: { id: cardId },
-//             include: { user: true }
-//         });
-
-//         if (!card) {
-//             return res.status(404).json({ error: 'Card not found' });
-//         }
-
-//         // Generate QR code (as before)
-//         const qrData = JSON.stringify({
-//             cardId: card.id,
-//             jobTitle: card.jobTitle,
-//             user: card.user.name
-//         });
-//         const qrImage = await QRCode.toDataURL(qrData);
-
-//         // Create a shareable link
-//         const shareableLink = `http://yourdomain.com/card/${card.id}`; // Replace with your frontend URL
-
-//         res.json({
-//             qrImage,
-//             shareableLink, // Send both to frontend
-//             cardDetails: card
-//         });
-
-
 
 //activity screen endpoint
+// app.get('/activity/:userId', async (req, res) => {
+//     try {
+//         const userId = parseInt(req.params.userId);
+//         const [ sharedCount, collectedCount ] = await Promise.all([
+//             prisma.share.count({ where: { fromUserId: userId } }),
+//             prisma.businessCard.count({ where: { userId } })
+//         ]);
+//         res.json({ sharedCount, collectedCount });
+//         } catch (e) {
+//             console.error('Activity error:', e);
+//             res.status(500).json({ error: 'Failed to fetch activity' });
+//         }
+//     }
+// );
 app.get('/activity/:userId', async (req, res) => {
     try {
-        const userId = parseInt(req.params.userId);
-        const [ sharedCount, collectedCount ] = await Promise.all([
-            prisma.share.count({ where: { fromUserId: userId } }),
-            prisma.businessCard.count({ where: { userId } })
-        ]);
-        res.json({ sharedCount, collectedCount });
-        } catch (e) {
-            console.error('Activity error:', e);
-            res.status(500).json({ error: 'Failed to fetch activity' });
-        }
+      const userId = parseInt(req.params.userId);
+      // 1) Verify user
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, name: true }
+      });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // 2) Fetch counts & activity
+      const [
+        cardsSharedByUser,
+        cardsSharedWithUser,
+        scrollodexCount,
+        recentActivity
+      ] = await Promise.all([
+        prisma.share.count({ where: { fromUserId: userId } }),
+        prisma.share.count({ where: { toUserId: userId } }),
+        prisma.businessCard.count({ where: { userId: userId } }),
+        prisma.share.findMany({
+          where: {
+            OR: [{ fromUserId: userId }, { toUserId: userId }]
+          },
+          include: {
+            card: { select: { jobTitle: true, companyName: true } },
+            fromUser: { select: { id: true, name: true } },
+            toUser:   { select: { id: true, name: true } }
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 10
+        })
+      ]);
+  
+      // 3) (Optional) debug log
+      console.log('Activity data for', userId, { cardsSharedByUser, cardsSharedWithUser, scrollodexCount });
+  
+      // 4) Return full payload
+      return res.json({
+        user,
+        cardsSharedByUser,
+        cardsSharedWithUser,
+        scrollodexCount,
+        recentActivity
+      });
+    } catch (e) {
+      console.error('Activity error:', e);
+      return res.status(500).json({ error: 'Failed to fetch activity' });
     }
-);
+  });
   
