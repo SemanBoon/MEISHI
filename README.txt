@@ -1,3 +1,35 @@
+                                            WELCOME TO MEISHI
+
+
+Here is a list of all the files in MEISHI:
+
+Frontend:
+
+activity.html  -    The acitvity page where the user can see all their metrics.
+auth.js        -    The javascript for the login/signup page.
+edit.js        -    The javascript for the edit page that allows the edit page to update info live.
+editcard.html  -    The edit page and its design.
+homepage.html  -    The main page from which the user navigates around the app.
+homepage.js    -    Mostly for creating the welcome message for the user.
+login.html     -    The login page where the user should login if they have an account.
+profile.html   -    The user's personal profile page.
+profile.js     -    The javascript that allows the profile page to recieve information from the edit page.
+qr.html        -    The QR code page.
+qr.js          -    The javascript for generating the QR code as well as giving the share buttons functionality.
+settings.html  -    Placeholder page for settings.
+signup.html    -    The signup page where a user can create an account.
+
+Backend:
+
+schema.prisma  -    The database model that manages and organizes the information of the user.
+index.js       -    The HTTP endpoints for MEISHI.
+
+
+
+
+
+To setup and run MEISHI:
+
 You must make sure the backend is running first, before you try to run the frontend.
 
 //BACKEND 
@@ -36,11 +68,5 @@ You must make sure the backend is running first, before you try to run the front
         │                                         │
         └─────────────────────────────────────────┘
         * Ctrl+Click on the local link
-        * Welcome to MEISHI
-
-
-
-
-
-
-
+    * Welcome to MEISHI
+        * You will be directed to the login page first. Don't have an account? Make one!
