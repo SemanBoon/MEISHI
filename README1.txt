@@ -17,7 +17,7 @@ You must make sure the backend is running first, before you try to run the front
             DATABASE_URL="postgresql://postgres:*232*Sewa@localhost:5432/mydb?schema=public"
     * Run Prisma migration to set up the database: npx prisma migrate dev --name init
     * Start the server: node index.js
-    * The server will start on: http://localhost:5432
+    * The server will start on: http://localhost:9000
 
 
 //FRONTEND
