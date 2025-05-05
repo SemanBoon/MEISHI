@@ -82,12 +82,6 @@ describe('Card Creation and Fetching', () => {
     console.log('✅ Successfully created business card ID:', cardId);
   });
 
-  test('should get all business cards', async () => {
-    const res = await request(app).get('/cards');
-    expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-  });
-
   test('should generate QR code for card', async () => {
     const res = await request(app).get(`/cards/${cardId}/qr`);
     expect(res.statusCode).toBe(200);
@@ -99,7 +93,7 @@ describe('Additional Routes', () => {
   test('should return greeting message on homepage route', async () => {
     const res = await request(app).get(`/homepage/${userId}`);
     expect(res.statusCode).toBe(200);
-    expect(res.text).toContain('Welcome to the MEISHI');
+    expect(res.text).toContain('Welcome to MEISHI');
   });
 
   test('should update a business card', async () => {

@@ -1,6 +1,6 @@
-// written by: Sewa and Bhavana
-// tested by: Sewa and Bhavana
-// debugged by: Sewa and Bhavana
+//written by: Sewa and Bhavana
+//tested by: Sewa and Bhavana
+//debugged by: Sewa and Bhavana
 
 require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
@@ -211,7 +211,23 @@ app.get('/pdf/:userId', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
+// GET all business cards
+app.get('/cards', async (req, res) => {
+    try {
+      const cards = await prisma.businessCard.findMany({
+        include: {
+          websites: true,
+          socials: true,
+          user: true
+        }
+      });
+      res.status(200).json(cards);
+    } catch (error) {
+      console.error("❌ Error fetching cards:", error);
+      res.status(500).json({ error: "Failed to fetch business cards" });
+    }
+  });
+  
 
 //api for homepage"
 app.get('/homepage/:id', async (req, res) => {
@@ -371,7 +387,7 @@ app.get('/scrollodex/:userId', async (req, res) => {
                     name: userWithCards.name,
                     email: userWithCards.email
                 },
-                scrollodex: []  
+                scrollodex: []  // 🚫 NO test friends
             });
         }
 
@@ -393,7 +409,7 @@ app.get('/scrollodex/:userId', async (req, res) => {
 
 
 
-// Add a shared card to another user's srolodex
+// Add a shared card to another user's rolodex
 app.post('/cards/share', async (req, res) => {
     try {
         const { cardId, recipientUserId } = req.body;
@@ -441,6 +457,21 @@ app.post('/cards/share', async (req, res) => {
 });
 
 
+//activity screen endpoint
+// app.get('/activity/:userId', async (req, res) => {
+//     try {
+//         const userId = parseInt(req.params.userId);
+//         const [ sharedCount, collectedCount ] = await Promise.all([
+//             prisma.share.count({ where: { fromUserId: userId } }),
+//             prisma.businessCard.count({ where: { userId } })
+//         ]);
+//         res.json({ sharedCount, collectedCount });
+//         } catch (e) {
+//             console.error('Activity error:', e);
+//             res.status(500).json({ error: 'Failed to fetch activity' });
+//         }
+//     }
+// );
 app.get('/activity/:userId', async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
