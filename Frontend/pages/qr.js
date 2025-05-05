@@ -8,9 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const cardData = JSON.parse(cardDataStr);
       // Check if user and username exist in the cardData
-      if (cardData.user && cardData.user.username) {
-        userName = cardData.user.username;
+      if (cardData.user) {
+        userName = cardData.user.name || cardData.user.username || userName;
       }
+      
     } catch (err) {
       console.error("Error parsing cardData from localStorage:", err);
     }
@@ -29,13 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const pdfUrl = `http://localhost:5432/pdf/${userId}`;
+  const pdfUrl = `http://localhost:9000/pdf/${userId}`;
 
   // Generate QR Code
   new QRCode(qrContainer, {
     text: pdfUrl,
-    width: 800,
-    height: 800,
+    width: 400,
+    height: 400,
     colorDark: "#000000",
     colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.H

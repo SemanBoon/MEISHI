@@ -26,10 +26,17 @@ model User {
 
 model BusinessCard {
   id           Int          @id @default(autoincrement())
-  jobTitle     String
-  companyName  String
-  phoneNumber  String
-  customBio    String
+  jobTitle     String?
+  companyName  String?
+  phoneNumber  String?
+  customBio    String?
+  bannerImageUrl String?
+  profileImageUrl String?
+  gradient       String?
+  education      String?
+  experience     String?       
+  projects       String?
+  email          String?       
   websites     Website[]
   socials      Social[]
   userId       Int

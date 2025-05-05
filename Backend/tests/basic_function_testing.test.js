@@ -47,18 +47,35 @@ describe('User Signup Endpoint', () => {
 describe('Card Creation and Fetching', () => {
   test('should create a business card', async () => {
     const res = await request(app).post('/create-business-card').send({
-      jobTitle: 'Developer',
-      companyName: 'Tech Co.',
-      phoneNumber: '1234567890',
-      websites: [{ url: 'https://example.com', label: 'Website' }],
-      socials: [{ url: 'https://linkedin.com', platform: 'LinkedIn' }],
-      customBio: 'This is a test bio',
-      userId: userId // passed from beforeAll
+      jobTitle: 'Founder and CEO',
+      companyName: 'MEISHI',
+      phoneNumber: '469(454)-9900',
+      customBio: 'I am the founder of MEISHI, a website to exchange business cards! ',
+      bannerImageUrl: 'https://theeinsteinschool.com/wp-content/uploads/2022/11/UT_Dallas_tex_orange-1320x488.jpeg',
+      profileImageUrl: 'https://img.freepik.com/premium-photo/woman-png-sticker-circle-profile-transparent-background_53876-944803.jpg?w=360',
+      gradient: 'gradient2',
+      education: 'B.S. in Computer Science',
+      experience: 'CS 3354 - Software Engineering',
+      projects: 'MEISHI, SWE Project',
+      email: 'meishimail@gmail.com',
+      userId: userId, // from beforeAll
+      websites: [
+        { url: 'https://example.com', label: 'Portfolio' }
+      ],
+      socials: [
+        { url: 'https://www.linkedin.com/in/bhavana-chemuturi/', platform: 'LinkedIn' }
+      ]
     });
-
+  
+    // ✅ Expectations
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty('id');
+    expect(res.body.userId).toBe(userId);
+  
+    // Store card ID for future tests
     cardId = res.body.id;
+  
+    console.log('✅ Successfully created business card ID:', cardId);
   });
 
   test('should get all business cards', async () => {

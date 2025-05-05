@@ -5,13 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Check if user is already logged in
    function checkAuth() {
-    // If we're not on the login or signup page and not logged in, redirect to login
- /*   if (!localStorage.getItem("userId") && 
-        !window.location.pathname.includes('login.html') && 
-        !window.location.pathname.includes('signup.html')) {
-      window.location.href = "login.html";
-    }*/
-    
     // If we're on login/signup page and already logged in, redirect to homepage
     if (localStorage.getItem("userId") && 
         (window.location.pathname.includes('login.html') || 
@@ -222,15 +215,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      // Clear all authentication data
+      // Clear all stored user and card data
       localStorage.removeItem("userId");
       localStorage.removeItem("userName");
       localStorage.removeItem("userEmail");
-      
+      localStorage.removeItem("cardData");
+      localStorage.removeItem("bannerImageDataUrl");
+      localStorage.removeItem("profileImageDataUrl");
+      localStorage.removeItem("cardUpdatedAt");
+  
+      // Optional: clear all localStorage (if you don't need anything persistent)
+      // localStorage.clear();
+  
       // Redirect to login page
       window.location.href = "login.html";
     });
   }
+  
 });
 
 // Helper functions that can be called from other scripts
@@ -258,98 +259,9 @@ function logout() {
   localStorage.removeItem("userId");
   localStorage.removeItem("userName");
   localStorage.removeItem("userEmail");
+  localStorage.removeItem("cardData");
+  localStorage.removeItem("bannerImageDataUrl");
+  localStorage.removeItem("profileImageDataUrl");
+  localStorage.removeItem("cardUpdatedAt");
   window.location.href = "login.html";
 }
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   const signupForm = document.getElementById("signup-form");
-//   const loginForm = document.getElementById("login-form");
-
-//   // Signup handler
-//   if (signupForm) {
-//     signupForm.addEventListener("submit", async (e) => {
-//       e.preventDefault();
-
-//       const name = document.getElementById("name").value;
-//       const email = document.getElementById("email").value;
-//       const birthday = document.getElementById("birthday").value;
-//       const password = document.getElementById("password").value;
-//       // const confirmPassword = document.getElementById("confirm-password").value;
-
-//       // if (password !== confirmPassword) {
-//       //   alert("Passwords do not match!");
-//       //   return;
-//       // }
-
-//       // try {
-//       //   const res = await fetch("http://localhost:9000/user-signup", {
-// //      const confirmPassword = document.getElementById("confirm-password").value;
-
-//    //   if (password !== confirmPassword) {
-//      //   alert("Passwords do not match!");
-//       //  return;
-//       //}
-
-//       try {
-//         const res = await fetch("http://localhost:9000/user-signup", {
-//           method: "POST",
-//           headers: { "Content-Type": "application/json" },
-//           body: JSON.stringify({ name, birthday, email, password })
-//         });
-
-//         const data = await res.json();
-
-//         if (res.ok) {
-//           alert("Signup successful!");
-//           localStorage.setItem("userId", data.id); // optional: save userId
-//           window.location.href = "homepage.html";
-//         } else {
-//           alert(data.error || "Signup failed.");
-//         }
-//       } catch (err) {
-//         console.error("Signup error:", err);
-//         alert("Could not connect to server.");
-//       }
-//     });
-//   }//end of signup
-
-//   // Login handler
-//   if (loginForm) {
-//     loginForm.addEventListener("submit", async (e) => {
-//       e.preventDefault();
-  
-//       const email = document.getElementById("email").value;
-//       const password = document.getElementById("password").value;
-  
-//       try {
-//         const res = await fetch("http://localhost:9000/login", {
-//           method: "POST",
-//           headers: { "Content-Type": "application/json" },
-//           body: JSON.stringify({ email, password })
-//         });
-  
-//         const data = await res.json();
-  
-//         if (res.ok) {
-//           if (data.id) {
-//             localStorage.setItem("userId", data.id);
-//           } else if (data.user && data.user.id) {
-//             localStorage.setItem("userId", data.user.id);
-//           } else {
-//             alert("Login response missing user ID.");
-//             return;
-//           }
-//           alert("Login successful!");
-//           window.location.href = "homepage.html"; 
-//         } else {
-//           alert(data.error || "Login failed.");
-//         }
-  
-//       } catch (err) {
-//         console.error("Login error:", err);
-//         alert("Could not connect to server.");
-//       }
-//     });
-//   }//end of login
-  
-// });

@@ -1,58 +1,310 @@
+<!-- written by: Sewa and Bhavana
+tested by: Sewa and Bhavana
+debugged by: Sewa and Bhavana -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Activity</title>
-  <link rel="stylesheet" href="../styles/activity.css">
-</head>
-<style>
-      .toolbar {
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEISHI - Activity</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+      background-color: #6ebec9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
       display: flex;
-      justify-content: space-evenly;
+      flex-direction: column;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
       width: 100%;
-      background-color: #333;
-      padding: 20px 0;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 2.5rem;
+      color: white;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .logo-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #e6e6e6;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 5px solid white;
+    }
+
+    .logo-image img {
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+    }
+
+    .welcome {
+      color: white;
+      font-size: 1.5rem;
+      margin-bottom: 40px;
+    }
+
+    .username {
+      color: #4285f4;
+      font-weight: bold;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      width: 28%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .stat-icon i {
+      font-size: 2rem;
+      color: #4285f4;
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .activity-container {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .activity-title {
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #4285f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+    }
+
+    .activity-icon i {
+      color: white;
+      font-size: 1rem;
+    }
+
+    .activity-icon.received {
+      background-color: #34a853;
+      /* Green */
+    }
+
+    .activity-details {
+      flex: 1;
+    }
+
+    .activity-name {
+      font-weight: bold;
       margin: 0;
     }
-  
-    .toolbar-icon {
-      width: 135px;
-      height: 135px;
-      object-fit: contain;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-  
-    .toolbar-icon:hover {
-      transform: scale(1.1);
+
+    .activity-info {
+      color: #666;
+      margin: 5px 0 0;
+      font-size: 0.9rem;
     }
 
-    body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .centered-text {
-            font-size: 128px;
-            text-align: center;
-        }
+    .activity-date {
+      color: #999;
+      font-size: 0.8rem;
+    }
 
-</style>
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: white;
+    }
+
+    .error {
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #d32f2f;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .footer {
+      background-color: #333;
+      width: 100%;
+      padding: 0;
+      display: flex;
+      position: sticky;
+      justify-content: space-evenly;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      z-index: 1000;
+    }
+
+    .nav-button {
+      width: 50px;
+      height: 50px;
+      background-color: #e6e6e6;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 1.5rem;
+    }
+
+    .nav-button.active {
+      background-color: white;
+    }
+
+    .profile-pic {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #e6e6e6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    @media (max-width: 600px) {
+      .stats-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .stat-card {
+        width: 80%;
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+
 <body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">MEISHI</div>
+      <div class="logo-image">
+        <img src="../images/MEISHI LOGO.png" alt="MEISHI Logo">
+      </div>
+      <div class="welcome">
+        Welcome, <span id="username" class="username"></span>!
+      </div>
+    </div>
 
-  <div class="activity-feed" id="activity-feed">
-    <!-- Activities will load here -->
+    <div id="stats-container" class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-share-alt"></i>
+        </div>
+        <div class="stat-number" id="shared-count">0</div>
+        <div class="stat-label">Shared</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-download"></i>
+        </div>
+        <div class="stat-number" id="received-count">0</div>
+        <div class="stat-label">Received</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-address-card"></i>
+        </div>
+        <div class="stat-number" id="scrollodex-count">0</div>
+        <div class="stat-label">Scrollodex</div>
+      </div>
+    </div>
+
+    <div class="activity-container">
+      <h2 class="activity-title">Recent Activity</h2>
+      <div id="activity-list">
+        <div class="loading">Loading activity data...</div>
+      </div>
+    </div>
   </div>
-  <div class="centered-text">Did you know that making a notification system is really hard!</div>
 
-  <div class="toolbar">
+  <div class="footer">
     <a href="settings.html">
       <img src="../images/Settings Icon.png" alt="Settings" class="toolbar-icon">
     </a>
@@ -64,6 +316,98 @@
     </a>
   </div>
 
-  <script src="activity.js"></script>
+  <script>
+    // Get current user ID from URL or session storage
+    const userId = new URLSearchParams(window.location.search).get('userId') || localStorage.getItem('userId')
+
+    // Function to format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Fetch user data and activity data
+    async function fetchData() {
+      try {
+        // Fetch activity data
+        const response = await fetch(`http://localhost:9000/activity/${userId}`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Set username (assuming user data is included in the response)
+        if (data.user && data.user.name) {
+          document.getElementById('username').textContent = data.user.name;
+        }
+
+        // Display stats
+        document.getElementById('username').textContent = data.user.name;
+        document.getElementById('shared-count').textContent = data.cardsSharedByUser;
+        document.getElementById('received-count').textContent = data.cardsSharedWithUser;
+        document.getElementById('scrollodex-count').textContent = data.scrollodexCount;
+
+
+        // Display activity
+        displayRecentActivity(data.recentActivity || []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        document.getElementById('stats-container').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Failed to load activity data. Please try again later.
+                    </div>
+                `;
+        document.getElementById('activity-list').innerHTML = '';
+      }
+    }
+
+    // Display recent activity
+    function displayRecentActivity(activities) {
+      const activityList = document.getElementById('activity-list');
+
+      if (!activities || activities.length === 0) {
+        activityList.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #666;">
+                        No recent activity to display.
+                    </div>
+                `;
+        return;
+      }
+
+      const activityHTML = activities.map(activity => {
+        const isSender = activity.fromUserId == userId;
+        const otherPerson = isSender ? activity.toUser.name : activity.fromUser.name;
+        const actionText = isSender
+          ? `You shared a card with ${otherPerson}`
+          : `${otherPerson} shared a card with you`;
+
+        return `
+                    <div class="activity-item">
+                        <div class="activity-icon ${isSender ? '' : 'received'}">
+                            <i class="fas fa-${isSender ? 'share-alt' : 'download'}"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h3 class="activity-name">${actionText}</h3>
+                            <p class="activity-info">${activity.card.companyName} - ${activity.card.jobTitle}</p>
+                            <span class="activity-date">${formatDate(activity.createdAt)}</span>
+                        </div>
+                    </div>
+                `;
+      }).join('');
+
+      activityList.innerHTML = activityHTML;
+    }
+
+    // Load data when the page loads
+    document.addEventListener('DOMContentLoaded', fetchData);
+  </script>
 </body>
+
 </html>

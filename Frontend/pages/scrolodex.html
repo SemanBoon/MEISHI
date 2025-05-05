@@ -118,38 +118,84 @@ body {
                   .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                   .join(' ');
     }
-  function renderContacts(contactList) {
-    const container = document.getElementById('contact-list');
-    container.innerHTML = '';
+function renderContacts(contactList) {
+  const container = document.getElementById('contact-list');
+  container.innerHTML = '';
 
-    if (contactList.length === 0) {
-        container.innerHTML = '<p>No contacts found. Add some!</p>';
-        return;
+  if (contactList.length === 0) {
+    container.innerHTML = '<p>No contacts found. Add some!</p>';
+    return;
+  }
+
+  const sorted = contactList.sort((a, b) => {
+    const nameA = (a.name || a.companyName || a.jobTitle || "").toLowerCase();
+    const nameB = (b.name || b.companyName || b.jobTitle || "").toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+
+  sorted.forEach(person => {
+    const div = document.createElement('div');
+    div.className = 'contact';
+    div.innerHTML = `
+      <span>${person.name || person.companyName || person.jobTitle || "Unnamed Contact"}</span>
+      ${person.favorite ? '<span class="star">⭐</span>' : ''}
+    `;
+    div.addEventListener('click', () => showCardModal(person)); // 👈 Add click to show details
+    container.appendChild(div);
+  });
+}
+
+function showCardModal(card) {
+  document.getElementById("modal-title").textContent = card.companyName || "Untitled";
+  document.getElementById("modal-job").textContent = card.jobTitle || "";
+  document.getElementById("modal-company").textContent = card.companyName || "";
+  document.getElementById("modal-email").textContent = card.email || "";
+  document.getElementById("modal-bio").textContent = card.customBio || "";
+  document.getElementById("modal-education").textContent = card.education || "";
+  document.getElementById("modal-experience").textContent = card.experience || "";
+  document.getElementById("modal-projects").textContent = card.projects || "";
+
+  // Profile & Banner Images
+  document.getElementById("modal-banner").src = card.bannerImageUrl || "";
+  document.getElementById("modal-profile").src = card.profileImageUrl || "";
+
+  // Gradient
+  const modal = document.getElementById("card-modal");
+  if (card.gradient) {
+    let gradient = "";
+    switch (card.gradient) {
+      case "gradient1":
+        gradient = "linear-gradient(45deg, #ff7e5f, #feb47b)";
+        break;
+      case "gradient2":
+        gradient = "linear-gradient(45deg, #4ca1af, #c4e0e5)";
+        break;
+      case "gradient3":
+        gradient = "linear-gradient(45deg, #2d3e50, #4d9e3e)";
+        break;
+      case "gradient4":
+        gradient = "linear-gradient(45deg, #833ef2, #559cd6)";
+        break;
     }
+    modal.style.background = gradient;
+  }
 
-    const sorted = contactList.sort((a, b) => {
-        const nameA = (a.name || a.companyName || a.jobTitle || "").toLowerCase();
-        const nameB = (b.name || b.companyName || b.jobTitle || "").toLowerCase();
-        return nameA.localeCompare(nameB);
-    });
-
-    sorted.forEach(person => {
-        const div = document.createElement('div');
-        div.className = 'contact';
-        div.innerHTML = `
-            <span>${person.name || person.companyName || person.jobTitle || "Unnamed Contact"}</span>
-            ${person.favorite ? '<span class="star">⭐</span>' : ''}
-        `;
-        container.appendChild(div);
-    });
+  modal.style.display = "block";
 }
 
   
-  document.getElementById('search').addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    const filtered = window.allContacts.filter(c => c.name.toLowerCase().includes(query));
-    renderContacts(filtered);
+document.getElementById('search').addEventListener('input', function(e) {
+  const query = e.target.value.toLowerCase();
+  const filtered = window.allContacts.filter(c => {
+    return (
+      (c.name && c.name.toLowerCase().includes(query)) ||
+      (c.companyName && c.companyName.toLowerCase().includes(query)) ||
+      (c.jobTitle && c.jobTitle.toLowerCase().includes(query))
+    );
   });
+  renderContacts(filtered);
+});
+
   
   window.onload = async () => {
     const userId = localStorage.getItem('userId');
@@ -179,6 +225,7 @@ body {
     }
 
     try {
+      console.log("userId:", userId);  //debugging 
         const response = await fetch(`http://localhost:9000/scrollodex/${userId}`);
         if (!response.ok) {
             throw new Error('Failed to fetch contacts');
@@ -196,7 +243,26 @@ body {
     }
 };
 
-  </script>
-  
+  </script><!-- Modal for business card -->
+<div id="card-modal" style="display:none; position:fixed; top:5%; left:10%; width:80%; background:#fff; color:#000; padding:20px; border-radius:10px; z-index:1001; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+  <button onclick="document.getElementById('card-modal').style.display='none'" style="float:right;">Close</button>
+
+  <!-- Banner Image -->
+  <img id="modal-banner" src="" style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px 10px 0 0;" />
+
+  <!-- Profile Image -->
+  <img id="modal-profile" src="" style="width: 100px; height: 100px; border-radius: 50%; margin-top: -50px; border: 3px solid white;" />
+
+  <h2 id="modal-title"></h2>
+  <p><strong>Name:</strong> <span id="modal-job"></span></p>
+  <p><strong>Company:</strong> <span id="modal-company"></span></p>
+  <p><strong>Email:</strong> <span id="modal-email"></span></p>
+  <p><strong>Bio:</strong> <span id="modal-bio"></span></p>
+  <p><strong>Education:</strong> <span id="modal-education"></span></p>
+  <p><strong>Experience:</strong> <span id="modal-experience"></span></p>
+  <p><strong>Projects:</strong> <span id="modal-projects"></span></p>
+</div>
+
+
 </body>
 </html>

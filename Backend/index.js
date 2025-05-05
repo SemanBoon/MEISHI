@@ -11,7 +11,9 @@ const QRCode = require('qrcode');
 module.exports = app;
 
 
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
+
 app.use(cors())
 
 const path = require('path');
@@ -77,50 +79,61 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
 // Create a new business card for a user
 app.post('/create-business-card', async (req, res) => {
     try {
-        const { jobTitle,
-            companyName,
-            phoneNumber,
-            websites,
-            socials,
-            customBio,
-            userId
-        } = req.body;
-
-        // Verify user exists first
-        const user = await prisma.user.findUnique({
-            where: { id: userId }
-        });
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+      const {
+        jobTitle,
+        companyName,
+        phoneNumber,
+        websites,
+        socials,
+        customBio,
+        userId,
+        bannerImageUrl,
+        profileImageUrl,
+        gradient,
+        education,
+        experience,
+        projects,
+        email
+      } = req.body;
+  
+      // Verify user exists first
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user) return res.status(404).json({ error: 'User not found' });
+  
+      const newCard = await prisma.businessCard.create({
+        data: {
+          jobTitle,
+          companyName,
+          phoneNumber,
+          customBio,
+          bannerImageUrl,
+          profileImageUrl,
+          gradient,
+          education,
+          experience,
+          projects,
+          email,
+          userId,
+          websites: { create: websites || [] },
+          socials: { create: socials || [] }
+        },
+        include: {
+          user: true,
+          websites: true,
+          socials: true
         }
-
-        const newCard = await prisma.businessCard.create({
-            data: {
-                jobTitle,
-                companyName,
-                phoneNumber,
-                websites: {
-                    create: websites,
-                },
-                socials: {
-                    create: socials,
-                },
-                customBio,
-                userId
-            }
-        });
-        res.status(201).json(newCard);
+      });
+  
+      console.log("✅ Created new card:", newCard);
+      res.status(201).json(newCard);
     } catch (error) {
-        console.error('Error creating business card:', error);
-        res.status(500).json({ error: 'Internal server error' });
+      console.error('❌ Error creating business card:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-});
-
+  });
 app.use('/pdfs', express.static(path.join(__dirname, 'pdfs')));
 
 const PDFDocument = require('pdfkit');
@@ -236,60 +249,73 @@ app.get('/homepage/:id', async (req, res) => {
     }
 });
 
-
 // Update/edit business card
 app.put('/update-business-cards', async (req, res) => {
     const {
-        jobTitle,
-        companyName,
-        phoneNumber,
-        websites,
-        socials,
-        customBio,
-        cardId
+      jobTitle,
+      companyName,
+      phoneNumber,
+      websites,
+      socials,
+      customBio,
+      cardId,
+      bannerImageUrl,
+      profileImageUrl,
+      gradient,
+      education,
+      experience,
+      projects,
+      email
     } = req.body;
-
+  
     const data = {};
     if (jobTitle !== undefined) data.jobTitle = jobTitle;
     if (customBio !== undefined) data.customBio = customBio;
     if (companyName !== undefined) data.companyName = companyName;
     if (phoneNumber !== undefined) data.phoneNumber = phoneNumber;
-
+    if (bannerImageUrl !== undefined) data.bannerImageUrl = bannerImageUrl;
+    if (profileImageUrl !== undefined) data.profileImageUrl = profileImageUrl;
+    if (gradient !== undefined) data.gradient = gradient;
+    if (education !== undefined) data.education = education;
+    if (experience !== undefined) data.experience = experience;
+    if (projects !== undefined) data.projects = projects;
+    if (email !== undefined) data.email = email;
+  
     if (websites && Array.isArray(websites)) {
-        data.websites = {
-            update: websites.map(site => ({
-                where: { id: site.id },
-                data: {
-                    url: site.url,
-                    label: site.label
-                }
-            }))
-        };
+      data.websites = {
+        update: websites.map(site => ({
+          where: { id: site.id },
+          data: { url: site.url, label: site.label }
+        }))
+      };
     }
-
+  
     if (socials && Array.isArray(socials)) {
-        data.socials = {
-            update: socials.map(social => ({
-                where: { id: social.id },
-                data: {
-                    url: social.url,
-                    platform: social.platform
-                }
-            }))
-        };
+      data.socials = {
+        update: socials.map(social => ({
+          where: { id: social.id },
+          data: { url: social.url, platform: social.platform }
+        }))
+      };
     }
-
+  
     try {
-        const updatedProfile = await prisma.businessCard.update({
-            where: { id: cardId },
-            data,
-        });
-        res.json(updatedProfile);
+      const updatedProfile = await prisma.businessCard.update({
+        where: { id: cardId },
+        data,
+        include: {
+          user: true,
+          websites: true,
+          socials: true
+        }
+      });
+      console.log("🔄 Updated card:", updatedProfile);
+      res.json(updatedProfile);
     } catch (e) {
-        res.status(500).json({ error: e.message });
+      console.error("❌ Update failed:", e);
+      res.status(500).json({ error: e.message });
     }
-});
-
+  });
 //generate qr code
 app.get('/cards/:id/qr', async (req, res) => {
     try {
@@ -318,7 +344,7 @@ app.get('/cards/:id/qr', async (req, res) => {
 
         // Generate QR as a PNG image
         const qrImage = await QRCode.toDataURL(qrData);
-       
+
         // Create a shareable link
         const shareableLink = `http://yourdomain.com/card/${card.id}`; // Replace with your frontend URL
 
@@ -332,6 +358,7 @@ app.get('/cards/:id/qr', async (req, res) => {
         res.status(500).json({ error: 'Failed to generate share options' });
     }
 });
+
 
 //gets scrollodex of a user
 //returns array of business cards of user(empty array if user has none)
@@ -471,16 +498,55 @@ app.post('/cards/share', async (req, res) => {
 //activity screen endpoint
 app.get('/activity/:userId', async (req, res) => {
     try {
-        const userId = parseInt(req.params.userId);
-        const [ sharedCount, collectedCount ] = await Promise.all([
-            prisma.share.count({ where: { fromUserId: userId } }),
-            prisma.businessCard.count({ where: { userId } })
-        ]);
-        res.json({ sharedCount, collectedCount });
-        } catch (e) {
-            console.error('Activity error:', e);
-            res.status(500).json({ error: 'Failed to fetch activity' });
-        }
+      const userId = parseInt(req.params.userId);
+      // 1) Verify user
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, name: true }
+      });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // 2) Fetch counts & activity
+      const [
+        cardsSharedByUser,
+        cardsSharedWithUser,
+        scrollodexCount,
+        recentActivity
+      ] = await Promise.all([
+        prisma.share.count({ where: { fromUserId: userId } }),
+        prisma.share.count({ where: { toUserId: userId } }),
+        prisma.businessCard.count({ where: { userId: userId } }),
+        prisma.share.findMany({
+          where: {
+            OR: [{ fromUserId: userId }, { toUserId: userId }]
+          },
+          include: {
+            card: { select: { jobTitle: true, companyName: true } },
+            fromUser: { select: { id: true, name: true } },
+            toUser:   { select: { id: true, name: true } }
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 10
+        })
+      ]);
+  
+      // 3) (Optional) debug log
+      console.log('Activity data for', userId, { cardsSharedByUser, cardsSharedWithUser, scrollodexCount });
+  
+      // 4) Return full payload
+      return res.json({
+        user,
+        cardsSharedByUser,
+        cardsSharedWithUser,
+        scrollodexCount,
+        recentActivity
+      });
+    } catch (e) {
+      console.error('Activity error:', e);
+      return res.status(500).json({ error: 'Failed to fetch activity' });
     }
-);
+  });
+  
   
