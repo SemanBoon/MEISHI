@@ -1,3 +1,7 @@
+// written by: Yezan and Sewa
+// tested by: Yezan and Sewa
+// debugged by: Yezan and Sewa
+
 document.addEventListener("DOMContentLoaded", () => {
   // Get the status message element
   const statusMessage = document.getElementById("status-message");

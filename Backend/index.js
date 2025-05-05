@@ -1,6 +1,6 @@
-//written by: Sewa and Bhavana
-//tested by: Sewa and Bhavana
-//debugged by: Sewa and Bhavana
+// written by: Sewa and Bhavana
+// tested by: Sewa and Bhavana
+// debugged by: Sewa and Bhavana
 
 require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');

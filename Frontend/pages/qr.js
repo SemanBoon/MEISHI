@@ -1,3 +1,7 @@
+// written by: Alejandro
+// tested by: Alejandro
+// debugged by: Alejandro
+
 document.addEventListener("DOMContentLoaded", () => {
   const userId = localStorage.getItem("userId");
   let userName = "YourNameHere";
