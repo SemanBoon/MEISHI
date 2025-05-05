@@ -1,8 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("🌐 edit.js running");
-  setTimeout(() => window.scrollTo({ top: 0, behavior: "auto" }), 50);
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, 50);  
 
-  const userId = localStorage.getItem("userId");
+  // Load existing card data from localStorage
+  const storedCardData = localStorage.getItem("cardData");
+  let bannerImageDataUrl = localStorage.getItem("bannerImageDataUrl") || null;
+  let profileImageDataUrl = localStorage.getItem("profileImageDataUrl") || null;
+
+  const userId = localStorage.getItem("userId"); 
   if (!userId) {
     alert("Not logged in.");
     window.location.href = "login.html";
