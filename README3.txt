@@ -3,19 +3,19 @@ You must make sure the backend is running before attempting to run unit tests.
 ## //BASIC FUNCTION TESTING
 
 * Navigate to the backend folder:  
-  ```bash
+  ```
   cd MEISHI/Backend
   ```
 
 ### 1. Install dev testing tools:
 These are needed to run Jest unit tests. You can enter these into the terminal in VS code.
-```bash
+```
 npm install --save-dev jest supertest
 ```
 
 ### 2. Make sure your database is set up:
 If you haven't already:
-```bash
+```
 npx prisma generate
 npx prisma migrate dev --name init
 ```
@@ -25,13 +25,17 @@ npx prisma migrate dev --name init
 ---
 
 ### 3. Run the tests:
-```bash
+```
 npm test
 ```
 
-You should see output for 5 tests:
+
+You should see output for **13 total tests**:
 - 2 for user signup
-- 3 for business card features
+- 3 for user login
+- 3 for card creation, editing, and QR code
+- 2 for homepage and landing routes
+- 3 for scrollodex behavior
 
 ### What’s Being Tested?
 
@@ -43,6 +47,7 @@ The unit tests for MEISHI are located in:
 
 This file includes tests for the following core backend features:
 
+
 #### USER SIGNUP ENDPOINT
 - `should create a new user`  
   Ensures a user can be registered successfully with unique credentials.
@@ -50,17 +55,26 @@ This file includes tests for the following core backend features:
 - `should return error for duplicate email`  
   Verifies that the system blocks accounts with emails already in use.
 
-#### CARD CREATION + RETRIEVAL
+#### USER LOGIN ENDPOINT
+- `should log in successfully with correct credentials`  
+- `should fail login with incorrect password`  
+- `should return 404 for non-existent user`  
+
+#### CARD CREATION + EDITING
 - `should create a business card`  
-  Tests the POST `/create-business-card` route for valid user inputs.
-
-- `should get all business cards`  
-  Confirms the `/cards` route returns all stored business card entries.
-
+- `should update a business card`  
 - `should generate QR code for card`  
-  Verifies that a QR code is returned for a given card using its ID.
+
+#### HOMEPAGE + LANDING ROUTES
+- `should return greeting message on homepage route`  
+- `should return landing message on root route`  
+
+#### SCROLLODEX ROUTE
+- `should return user’s business cards in Scrollodex`  
+- `should return empty scrollodex array if user has no cards`  
 
 ---
+
 
 ### 🛠 Notes
 - The tests use dynamic emails like `user{timestamp}@example.com` to avoid conflicts from using the same email.
