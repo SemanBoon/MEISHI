@@ -1,3 +1,7 @@
+// written by: Yezan
+// tested by: Yezan
+// debugged by: Yezan
+
 document.addEventListener("DOMContentLoaded", function () {
   setTimeout(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
