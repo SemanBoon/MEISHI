@@ -371,7 +371,7 @@ app.get('/scrollodex/:userId', async (req, res) => {
                     name: userWithCards.name,
                     email: userWithCards.email
                 },
-                scrollodex: []  // 🚫 NO test friends
+                scrollodex: []  
             });
         }
 
@@ -393,7 +393,7 @@ app.get('/scrollodex/:userId', async (req, res) => {
 
 
 
-// Add a shared card to another user's rolodex
+// Add a shared card to another user's srolodex
 app.post('/cards/share', async (req, res) => {
     try {
         const { cardId, recipientUserId } = req.body;
@@ -441,21 +441,6 @@ app.post('/cards/share', async (req, res) => {
 });
 
 
-//activity screen endpoint
-// app.get('/activity/:userId', async (req, res) => {
-//     try {
-//         const userId = parseInt(req.params.userId);
-//         const [ sharedCount, collectedCount ] = await Promise.all([
-//             prisma.share.count({ where: { fromUserId: userId } }),
-//             prisma.businessCard.count({ where: { userId } })
-//         ]);
-//         res.json({ sharedCount, collectedCount });
-//         } catch (e) {
-//             console.error('Activity error:', e);
-//             res.status(500).json({ error: 'Failed to fetch activity' });
-//         }
-//     }
-// );
 app.get('/activity/:userId', async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
